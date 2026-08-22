@@ -127,6 +127,7 @@ export function PoapDetail({ id }: { id: string }) {
           <MintPanel
             event={event}
             mintNumber={supply}
+            image={metadata?.image}
             onMinted={() => {
               refetch();
               refetchSupply();

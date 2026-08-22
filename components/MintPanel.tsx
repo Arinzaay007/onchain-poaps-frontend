@@ -21,18 +21,24 @@ import {
   type PoapEvent,
 } from "@/lib/poap";
 import { timeLeft } from "@/lib/format";
+import { formatDate } from "@/lib/format";
 import type { ProofsFile } from "@/lib/merkle";
 import { getAddress, isAddress, isHex } from "viem";
+import { MintSlam } from "./MintSlam";
+import { downloadTicketStub } from "@/lib/stub";
 
 export function MintPanel({
   event,
   onMinted,
   mintNumber,
+  image,
 }: {
   event: PoapEvent;
   onMinted?: () => void;
   /** total supply after the user's mint — shown as "collector #N" */
   mintNumber?: bigint;
+  /** artwork data-uri, used for the ticket-stub download */
+  image?: string | null;
 }) {
   const { address, isConnected } = useAccount();
   const { isMiniApp } = useMiniApp();
@@ -69,6 +75,7 @@ export function MintPanel({
   if (tx.status === "success") {
     return (
       <div className="card border-mint/40 bg-mint/5 p-5 animate-fadeUp">
+        <MintSlam show />
         <p className="font-display text-xl font-bold text-mint">
           🎉 POAP minted!
         </p>
@@ -86,6 +93,24 @@ export function MintPanel({
           <a href="/gallery" className="btn-secondary !py-2 text-xs">
             View my collection
           </a>
+          <button
+            className="btn-secondary !py-2 text-xs"
+            onClick={() =>
+              downloadTicketStub({
+                name: event.name,
+                dateStr: formatDate(event.eventDate || event.createdAt),
+                location: event.location || undefined,
+                image,
+                collectorNo:
+                  mintNumber && mintNumber > 0n ? mintNumber.toString() : undefined,
+                address: address ?? "",
+                verifyUrl: `${window.location.origin}/verify?id=${event.id}&addr=${address}`,
+                eventId: event.id.toString(),
+              })
+            }
+          >
+            🎟️ Download ticket stub
+          </button>
           {isMiniApp && (
             <button
               className="btn-primary !py-2 text-xs"

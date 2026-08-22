@@ -15,6 +15,10 @@ import { formatDate, shortAddress } from "@/lib/format";
 import { useMiniApp, composeCast } from "@/components/MiniAppProvider";
 import { isSignatureWindowOpen, signatureWindowEndsAt } from "@/lib/poap";
 import { timeLeft } from "@/lib/format";
+import { WaxSeal } from "@/components/WaxSeal";
+import { MintSlam } from "@/components/MintSlam";
+import { downloadTicketStub } from "@/lib/stub";
+import { useTotalSupply } from "@/lib/hooks";
 
 export default function ClaimPage() {
   return (
@@ -60,6 +64,7 @@ function ClaimBody({ payload }: { payload: ClaimPayload }) {
   const { metadata } = usePoapMetadata(eventId);
   const { address, isConnected } = useAccount();
   const claimed = useHasClaimed(eventId, address);
+  const { data: supply, refetch: refetchSupply } = useTotalSupply(eventId);
   const tx = useTx();
   const { isMiniApp } = useMiniApp();
   const { openConnectModal } = useConnectModal();
@@ -105,21 +110,30 @@ function ClaimBody({ payload }: { payload: ClaimPayload }) {
         args: [eventId, payload.proof ?? []],
       });
     }
+    refetchSupply();
   };
+
+  const isYours = !!claimed.data || tx.status === "success";
 
   return (
     <div className="container-page max-w-xl py-12 text-center">
+      <MintSlam show={tx.status === "success"} />
       <p className="text-xs font-bold uppercase tracking-widest text-accent">
         You&rsquo;ve been invited to claim
       </p>
       <div className="card mt-4 flex flex-col items-center p-8">
-        <PoapStamp
-          image={metadata?.image}
-          alt={event.name}
-          size="lg"
-          stamped={tx.status === "success" || !!claimed.data}
-        />
-        <h1 className="mt-4 font-display text-3xl font-black">{event.name}</h1>
+        <div className="relative">
+          <PoapStamp
+            image={metadata?.image}
+            alt={event.name}
+            size="lg"
+            stamped={isYours}
+          />
+          <div className="absolute -bottom-3 left-1/2 -translate-x-1/2">
+            <WaxSeal state={isYours ? "broken" : "sealed"} size={84} />
+          </div>
+        </div>
+        <h1 className="mt-12 font-display text-3xl font-black">{event.name}</h1>
         {event.description && (
           <p className="mt-2 text-sm leading-relaxed text-faded">{event.description}</p>
         )}
@@ -132,7 +146,7 @@ function ClaimBody({ payload }: { payload: ClaimPayload }) {
         </div>
 
         <div className="mt-6 w-full">
-          {claimed.data || tx.status === "success" ? (
+          {isYours ? (
             <div className="animate-fadeUp">
               <p className="font-display text-xl font-bold text-mint">
                 🎉 This POAP is yours!
@@ -142,6 +156,23 @@ function ClaimBody({ payload }: { payload: ClaimPayload }) {
                 <Link href="/gallery" className="btn-secondary !py-2 text-xs">
                   View my collection
                 </Link>
+                <button
+                  className="btn-secondary !py-2 text-xs"
+                  onClick={() =>
+                    downloadTicketStub({
+                      name: event.name,
+                      dateStr: formatDate(event.eventDate || event.createdAt),
+                      location: event.location || undefined,
+                      image: metadata?.image,
+                      collectorNo: supply && supply > 0n ? supply.toString() : undefined,
+                      address: address ?? "",
+                      verifyUrl: `${window.location.origin}/verify?id=${eventId}&addr=${address}`,
+                      eventId: eventId.toString(),
+                    })
+                  }
+                >
+                  🎟️ Ticket stub
+                </button>
                 {isMiniApp && (
                   <button
                     className="btn-primary !py-2 text-xs"
