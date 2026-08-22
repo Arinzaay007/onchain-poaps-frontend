@@ -95,6 +95,8 @@ export function friendlyError(err: unknown): string {
     return "The allowlist has already been set — it can only be set once.";
   if (msg.includes("POAP__SoulboundNotTransferable"))
     return "This POAP is soulbound and cannot be transferred.";
+  if (msg.includes("ERC1155InvalidReceiver") || msg.includes("InvalidReceiver"))
+    return "Your smart-contract wallet doesn't support receiving ERC-1155 tokens. Try a regular wallet (e.g. MetaMask) instead.";
   if (msg.includes('POAP__InvalidValue("proof")') || msg.includes("proof"))
     return "Invalid Merkle proof — this wallet may not be on the allowlist.";
   if (msg.includes('POAP__InvalidValue("signer")') || msg.includes("signer"))
