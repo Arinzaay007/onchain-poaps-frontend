@@ -39,10 +39,20 @@ const config: Config = {
           "0%": { transform: "translateY(10px)", opacity: "0" },
           "100%": { transform: "translateY(0)", opacity: "1" },
         },
+        floaty: {
+          "0%,100%": { transform: "translateY(0) rotate(var(--tilt, -6deg))" },
+          "50%": { transform: "translateY(-10px) rotate(var(--tilt, -6deg))" },
+        },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
       },
       animation: {
         stampIn: "stampIn .45s cubic-bezier(.2,1.4,.4,1) forwards",
         fadeUp: "fadeUp .4s ease-out both",
+        floaty: "floaty 7s ease-in-out infinite",
+        marquee: "marquee 28s linear infinite",
       },
     },
   },

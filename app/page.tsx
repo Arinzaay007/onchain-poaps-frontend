@@ -7,6 +7,8 @@ import { PoapCard } from "@/components/PoapCard";
 import { StampLogo } from "@/components/Navbar";
 import { ActivityFeed } from "@/components/ActivityFeed";
 import { IS_TESTNET } from "@/lib/contract";
+import { generateStampSvg } from "@/lib/stamp";
+import { svgToDataUri } from "@/lib/svg";
 
 export default function Home() {
   const { data: total } = useTotalEvents();
@@ -18,41 +20,105 @@ export default function Home() {
   }, [total]);
   const { items } = usePoapList(recentIds);
 
+  // decorative hero stamps (generated client-side, zero asset weight)
+  const heroStamps = useMemo(
+    () => [
+      {
+        uri: svgToDataUri(
+          generateStampSvg({
+            shape: "scallop", bg: "#c73e1d", ink: "#f8f3e8", center: "🎪",
+            centerColor: "#f8f3e8", topText: "ETH LAGOS 2026", bottomText: "", showDashRing: true,
+          }),
+        ),
+        cls: "left-[3%] top-24 w-32 -rotate-12 [--tilt:-12deg]",
+        delay: "0s",
+      },
+      {
+        uri: svgToDataUri(
+          generateStampSvg({
+            shape: "gear", bg: "#16233a", ink: "#e8dcc0", center: "🛠️",
+            centerColor: "#f8f3e8", topText: "BASE BUILDERS", bottomText: "", showDashRing: true,
+          }),
+        ),
+        cls: "right-[4%] top-16 w-36 rotate-[9deg] [--tilt:9deg]",
+        delay: "1.6s",
+      },
+      {
+        uri: svgToDataUri(
+          generateStampSvg({
+            shape: "ring", bg: "#3d7a4f", ink: "#eaf3dc", center: "🌱",
+            centerColor: "#eaf3dc", topText: "GENESIS MEETUP", bottomText: "", showDashRing: false,
+          }),
+        ),
+        cls: "right-[12%] bottom-8 w-28 -rotate-6 [--tilt:-6deg]",
+        delay: "3.2s",
+      },
+    ],
+    [],
+  );
+
   return (
-    <div className="container-page">
+    <div>
       {/* Hero */}
-      <section className="flex flex-col items-center py-16 text-center sm:py-24">
-        <div className="mb-6 flex items-center gap-2 rounded-full border border-line bg-white/60 px-4 py-1.5 text-xs font-semibold text-faded">
-          <span className="h-2 w-2 rounded-full bg-mint animate-pulse" />
-          100% onchain · no IPFS · no servers
-          {IS_TESTNET && <span className="text-gold">· Base Sepolia</span>}
+      <section className="relative overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 hidden lg:block" aria-hidden>
+          {heroStamps.map((s, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={i}
+              src={s.uri}
+              alt=""
+              className={`absolute animate-floaty opacity-80 drop-shadow-md ${s.cls}`}
+              style={{ animationDelay: s.delay }}
+            />
+          ))}
         </div>
-        <h1 className="max-w-3xl font-display text-4xl font-black leading-tight tracking-tight sm:text-6xl">
-          Proof of attendance,{" "}
-          <span className="text-accent">stamped forever onchain.</span>
-        </h1>
-        <p className="mt-5 max-w-xl text-base leading-relaxed text-faded sm:text-lg">
-          Create POAPs whose SVG artwork and metadata live entirely on Base.
-          Distribute them publicly, by allowlist, or with QR codes at live
-          events. Collect them for life.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link href="/create" className="btn-primary !px-6 !py-3 !text-base">
-            Create a POAP
-          </Link>
-          <Link href="/explore" className="btn-secondary !px-6 !py-3 !text-base">
-            Explore POAPs
-          </Link>
-        </div>
-        {total !== undefined && (
-          <p className="mt-6 font-mono text-xs text-faded">
-            {(total + 1n).toString()} POAPs registered onchain
+        <div className="container-page relative flex flex-col items-center py-16 text-center sm:py-24">
+          <div className="mb-6 flex items-center gap-2 rounded-full border border-line bg-white/60 px-4 py-1.5 text-xs font-semibold text-faded">
+            <span className="h-2 w-2 rounded-full bg-mint animate-pulse" />
+            100% onchain · no IPFS · no servers
+            {IS_TESTNET && <span className="text-gold">· Base Sepolia</span>}
+          </div>
+          <h1 className="max-w-3xl font-display text-4xl font-black leading-tight tracking-tight sm:text-6xl">
+            Proof of attendance,{" "}
+            <span className="text-accent">stamped forever onchain.</span>
+          </h1>
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-faded sm:text-lg">
+            Create POAPs whose SVG artwork and metadata live entirely on Base.
+            Distribute them publicly, by allowlist, or with QR codes at live
+            events. Collect them for life.
           </p>
-        )}
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link href="/create" className="btn-primary !px-6 !py-3 !text-base">
+              Create a POAP
+            </Link>
+            <Link href="/explore" className="btn-secondary !px-6 !py-3 !text-base">
+              Explore POAPs
+            </Link>
+          </div>
+          {total !== undefined && (
+            <p className="mt-6 font-mono text-xs text-faded">
+              {(total + 1n).toString()} POAPs registered onchain
+            </p>
+          )}
+        </div>
       </section>
 
+      {/* paper-tape marquee */}
+      <div className="overflow-hidden border-y border-line bg-parchment/70 py-2" aria-hidden>
+        <div className="flex w-max animate-marquee gap-0 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-faded/80">
+          {[0, 1].map((k) => (
+            <span key={k} className="whitespace-nowrap pr-2">
+              100% onchain ✦ no IPFS ✦ soulbound or transferable ✦ QR claims at live events ✦
+              allowlists without the math ✦ 1 per wallet ✦ verify anyone, anytime ✦ MIT licensed ✦{" "}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="container-page">
       {/* How it works */}
-      <section className="grid gap-4 sm:grid-cols-3">
+      <section className="mt-12 grid gap-4 sm:grid-cols-3">
         {[
           {
             n: "01",
@@ -114,6 +180,7 @@ export default function Home() {
           </Link>
         </div>
       </section>
+      </div>
     </div>
   );
 }
