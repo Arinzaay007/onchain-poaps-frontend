@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { useTotalEvents, usePoapList } from "@/lib/hooks";
 import { PoapCard } from "@/components/PoapCard";
 import { StampLogo } from "@/components/Navbar";
+import { ActivityFeed } from "@/components/ActivityFeed";
 import { IS_TESTNET } from "@/lib/contract";
 
 export default function Home() {
@@ -80,26 +81,38 @@ export default function Home() {
         ))}
       </section>
 
-      {/* Recent POAPs */}
-      <section className="mt-16">
-        <div className="mb-5 flex items-end justify-between">
-          <h2 className="font-display text-2xl font-bold">Latest POAPs</h2>
-          <Link href="/explore" className="text-sm font-semibold text-accent hover:underline">
-            View all →
+      {/* Live activity + Recent POAPs */}
+      <section className="mt-16 grid gap-6 lg:grid-cols-[1fr,380px]">
+        <div>
+          <div className="mb-5 flex items-end justify-between">
+            <h2 className="font-display text-2xl font-bold">Latest POAPs</h2>
+            <Link href="/explore" className="text-sm font-semibold text-accent hover:underline">
+              View all →
+            </Link>
+          </div>
+          {items.length === 0 ? (
+            <div className="card flex flex-col items-center gap-3 p-12 text-center text-faded">
+              <StampLogo className="h-10 w-10 opacity-40" />
+              <p className="text-sm">Loading POAPs from Base…</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {items.map((it) => (
+                <PoapCard key={it.event.id.toString()} item={it} />
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="space-y-4">
+          <ActivityFeed />
+          <Link href="/verify" className="card block p-5 transition-all hover:-translate-y-0.5 hover:shadow-lift">
+            <h3 className="font-display text-lg font-bold">✓ Verify attendance</h3>
+            <p className="mt-1 text-sm leading-relaxed text-faded">
+              Check whether any wallet holds a given POAP — with the onchain
+              mint receipt to prove it.
+            </p>
           </Link>
         </div>
-        {items.length === 0 ? (
-          <div className="card flex flex-col items-center gap-3 p-12 text-center text-faded">
-            <StampLogo className="h-10 w-10 opacity-40" />
-            <p className="text-sm">Loading POAPs from Base…</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {items.map((it) => (
-              <PoapCard key={it.event.id.toString()} item={it} />
-            ))}
-          </div>
-        )}
       </section>
     </div>
   );

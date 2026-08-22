@@ -14,7 +14,8 @@ export default function Page() {
 
       <h2>Quick checks</h2>
       <ul>
-        <li><strong>In this app:</strong> every POAP page and gallery item links directly to BaseScan and OpenSea. Your collection page reads balances live from the chain.</li>
+        <li><strong>The in-app verifier:</strong> the <a href="/verify">Verify page</a> checks any wallet (or ENS name) against any POAP and shows the full onchain receipt — current balance, whether the wallet minted it, its collector number, and the mint transaction. Every result has a shareable link, so event organizers can verify attendees in seconds.</li>
+        <li><strong>In this app:</strong> every POAP page and gallery item links directly to BaseScan and OpenSea. Your collection page reads balances live from the chain, and each POAP page lists its collectors straight from the mint logs.</li>
         <li>
           <strong>On BaseScan:</strong> open the{" "}
           <a href={`${EXPLORER_URL}/address/${POAP_ADDRESS}`} target="_blank" rel="noreferrer">contract page</a>{" "}

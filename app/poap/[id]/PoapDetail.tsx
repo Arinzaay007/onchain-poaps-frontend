@@ -30,6 +30,7 @@ import {
   POAP_ADDRESS,
 } from "@/lib/contract";
 import { composeCast, useMiniApp } from "@/components/MiniAppProvider";
+import { useCollectors } from "@/lib/activity";
 
 export function PoapDetail({ id }: { id: string }) {
   const eventId = useMemo(() => {
@@ -125,11 +126,15 @@ export function PoapDetail({ id }: { id: string }) {
 
           <MintPanel
             event={event}
+            mintNumber={supply}
             onMinted={() => {
               refetch();
               refetchSupply();
             }}
           />
+
+          {/* Collectors */}
+          <CollectorsCard event={event} supply={supply} />
 
           {/* Timing */}
           <div className="card p-5">
@@ -231,6 +236,81 @@ export function PoapDetail({ id }: { id: string }) {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function CollectorsCard({
+  event,
+  supply,
+}: {
+  event: import("@/lib/poap").PoapEvent;
+  supply?: bigint;
+}) {
+  const { data, isLoading } = useCollectors(event.id, event.createdAt);
+  const { address } = useAccount();
+  const records = data?.records ?? [];
+  const mine = address
+    ? records.find((r) => r.recipient.toLowerCase() === address.toLowerCase())
+    : undefined;
+
+  return (
+    <div className="card p-5">
+      <div className="flex items-baseline justify-between">
+        <h2 className="font-display text-lg font-bold">Collectors</h2>
+        <span className="font-mono text-xs text-faded">
+          {supply?.toString() ?? "…"} total
+        </span>
+      </div>
+      {mine && (
+        <p className="mt-2 rounded-xl border border-mint/30 bg-mint/5 px-3 py-2 text-sm">
+          You are <b>collector #{mine.position}</b> —{" "}
+          <a
+            href={`${EXPLORER_URL}/tx/${mine.txHash}`}
+            target="_blank"
+            rel="noreferrer"
+            className="font-semibold text-accent hover:underline"
+          >
+            mint receipt ↗
+          </a>
+        </p>
+      )}
+      {isLoading ? (
+        <p className="mt-3 text-sm text-faded">Reading mint logs from Base…</p>
+      ) : records.length === 0 ? (
+        <p className="mt-3 text-sm text-faded">
+          No mints yet — the #1 stamp is still up for grabs.
+        </p>
+      ) : (
+        <ul className="mt-3 grid gap-1.5 sm:grid-cols-2">
+          {records.slice(0, 12).map((r) => (
+            <li key={r.txHash + r.recipient} className="flex items-center gap-2 text-sm">
+              <span
+                className={`badge shrink-0 ${
+                  r.position === 1
+                    ? "border border-gold/40 bg-gold/10 text-gold"
+                    : "border border-line bg-parchment text-faded"
+                }`}
+              >
+                #{r.position}
+              </span>
+              <a
+                href={`${EXPLORER_URL}/tx/${r.txHash}`}
+                target="_blank"
+                rel="noreferrer"
+                className="truncate font-mono text-xs text-faded hover:text-ink"
+                title="View mint transaction"
+              >
+                {shortAddress(r.recipient, 5)}
+              </a>
+              {r.position === 1 && <span className="text-[10px] font-bold uppercase text-gold">first!</span>}
+            </li>
+          ))}
+        </ul>
+      )}
+      {records.length > 12 && (
+        <p className="mt-2 text-xs text-faded">…and {records.length - 12} more onchain.</p>
+      )}
     </div>
   );
 }

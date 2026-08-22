@@ -12,6 +12,7 @@ export default function Page() {
 
       <h2>Requirements</h2>
       <ul>
+        <li><strong>No design skills? Use the built-in Stamp Studio.</strong> The create wizard includes a designer — pick a shape, palette, emoji or initials, and curved rim text — that outputs a hand-optimized 1–3 KB SVG ready to store onchain.</li>
         <li><strong>SVG only.</strong> Raster images (PNG/JPG) would be absurdly expensive to store onchain. Vector art is compact and scales perfectly.</li>
         <li><strong>Self-contained.</strong> No external URLs — external fonts, images or stylesheets will not load inside NFT viewers. Inline everything; convert text to paths if you use a special font.</li>
         <li><strong>No scripts.</strong> Most viewers strip or refuse SVGs containing <code>&lt;script&gt;</code>.</li>

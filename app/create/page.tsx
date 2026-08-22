@@ -31,6 +31,7 @@ import {
 } from "@/lib/merkle";
 import { downloadJson, formatBytes } from "@/lib/format";
 import { ZERO_ROOT } from "@/lib/poap";
+import { StampStudio } from "@/components/StampStudio";
 
 type Step = 0 | 1 | 2 | 3;
 
@@ -38,6 +39,7 @@ export default function CreatePage() {
   const [step, setStep] = useState<Step>(0);
 
   // step 1 — artwork
+  const [artMode, setArtMode] = useState<"studio" | "upload">("studio");
   const [rawSvg, setRawSvg] = useState("");
   const [useOptimized, setUseOptimized] = useState(true);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -244,11 +246,44 @@ export default function CreatePage() {
           <section>
             <h2 className="font-display text-xl font-bold">POAP artwork (SVG)</h2>
             <p className="mt-1 text-sm text-faded">
-              SVG only — it&rsquo;s stored as text onchain, so vector art is the
-              only format that makes sense. Keep it simple: every byte costs
-              gas, forever.
+              Design one right here in the Stamp Studio — or bring your own
+              SVG. Either way it&rsquo;s stored as text onchain, forever, so
+              smaller is better.
             </p>
 
+            <div className="mt-4 flex gap-2">
+              <button
+                className={artMode === "studio" ? "btn-primary !py-1.5 text-xs" : "btn-secondary !py-1.5 text-xs"}
+                onClick={() => setArtMode("studio")}
+              >
+                🎨 Stamp Studio
+              </button>
+              <button
+                className={artMode === "upload" ? "btn-primary !py-1.5 text-xs" : "btn-secondary !py-1.5 text-xs"}
+                onClick={() => setArtMode("upload")}
+              >
+                Upload / paste SVG
+              </button>
+            </div>
+
+            {artMode === "studio" && (
+              <div className="mt-4">
+                <StampStudio
+                  eventName={name || undefined}
+                  onUse={(svg) => {
+                    setRawSvg(svg);
+                    setArtMode("upload");
+                  }}
+                />
+                <p className="mt-3 text-[11px] text-faded">
+                  Studio designs are hand-optimized SVGs (~1–3 KB) — cheaper to
+                  store onchain than most exported files.
+                </p>
+              </div>
+            )}
+
+            {artMode === "upload" && (
+              <>
             <div className="mt-4 flex flex-wrap gap-2">
               <button className="btn-secondary" onClick={() => fileRef.current?.click()}>
                 Upload .svg file
@@ -318,6 +353,8 @@ export default function CreatePage() {
                   )}
                 </div>
               </div>
+            )}
+              </>
             )}
 
             <NavButtons

@@ -9,6 +9,7 @@ import { IS_TESTNET } from "@/lib/contract";
 const links = [
   { href: "/explore", label: "Explore" },
   { href: "/create", label: "Create" },
+  { href: "/verify", label: "Verify" },
   { href: "/gallery", label: "My Collection" },
   { href: "/docs", label: "Docs" },
 ];

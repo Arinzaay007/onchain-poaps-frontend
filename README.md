@@ -7,7 +7,7 @@ Built for [poidh bounty #1334](https://poidh.xyz/base/bounty/1334).
 ## Features
 
 **For creators**
-- 🎨 4-step registration wizard with live artwork preview, in-browser **SVGO optimization**, byte/gas estimates and SVG validation
+- 🎨 **Stamp Studio** — design POAP artwork in-app (shapes, palettes, emoji, curved rim text) producing hand-optimized 1–3 KB SVGs; or bring your own SVG with in-browser **SVGO optimization**, byte/gas estimates and validation
 - 🔓 Public mint open/close controls with live 30-day-window countdowns
 - 📋 Allowlist workflow: paste addresses → Merkle root built client-side → one-tx setup → auto-download `proofs.json`, per-wallet claim links CSV, root re-verification/proof regeneration
 - ✍️ Signature minting: **live event mode** (sign → claim QR in seconds at the door) and **batch mode** (signatures.json, claim-links CSV, printable QR sheet for badges)
@@ -18,6 +18,8 @@ Built for [poidh bounty #1334](https://poidh.xyz/base/bounty/1334).
 - ⚡ Every enabled mint path: public, allowlist (paste proofs or one-tap claim links), signature (claim links/QR)
 - 🎫 Serverless claim links — the URL fragment carries the proof/signature; nothing ever touches a server
 - 📖 Stamp-album gallery of owned POAPs with OpenSea/BaseScan verification
+- ✅ **Public attendance verifier** (`/verify`) — check any wallet/ENS against any POAP: balance, mint record, collector number, tx receipt, shareable result links
+- 📡 **Live onchain activity feed** and per-POAP collector lists ("collector #N"), read straight from contract logs
 - 📚 Full in-app documentation of the entire protocol
 
 **Farcaster Mini App**

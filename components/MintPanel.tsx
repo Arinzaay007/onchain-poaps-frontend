@@ -27,9 +27,12 @@ import { getAddress, isAddress, isHex } from "viem";
 export function MintPanel({
   event,
   onMinted,
+  mintNumber,
 }: {
   event: PoapEvent;
   onMinted?: () => void;
+  /** total supply after the user's mint — shown as "collector #N" */
+  mintNumber?: bigint;
 }) {
   const { address, isConnected } = useAccount();
   const { isMiniApp } = useMiniApp();
@@ -71,6 +74,12 @@ export function MintPanel({
         </p>
         <p className="mt-1 text-sm text-faded">
           &ldquo;{event.name}&rdquo; is now permanently in your collection.
+          {mintNumber !== undefined && mintNumber > 0n && (
+            <>
+              {" "}
+              You are <b className="text-ink">collector #{mintNumber.toString()}</b>.
+            </>
+          )}
         </p>
         <VerifyLinks eventId={event.id} hash={tx.hash} />
         <div className="mt-3 flex flex-wrap gap-2">
