@@ -34,6 +34,22 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
         if (isMiniApp) {
           // Hide the Farcaster splash screen once the app has rendered
           await sdk.actions.ready();
+          // Prompt to add the Mini App — once, and only if not already added.
+          try {
+            const ctx = await sdk.context;
+            const alreadyPrompted = localStorage.getItem("op:addPrompted");
+            if (!ctx?.client?.added && !alreadyPrompted) {
+              localStorage.setItem("op:addPrompted", "1");
+              // slight delay so the user sees the app before the sheet appears
+              setTimeout(() => {
+                sdk.actions.addMiniApp().catch(() => {
+                  /* user dismissed or invalid context — never block the app */
+                });
+              }, 1500);
+            }
+          } catch {
+            /* context unavailable — skip the prompt */
+          }
         }
       } catch {
         if (!cancelled) setState({ isMiniApp: false, ready: true });
