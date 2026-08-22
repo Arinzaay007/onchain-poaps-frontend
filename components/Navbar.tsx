@@ -19,7 +19,7 @@ export function Navbar() {
   const { isMiniApp } = useMiniApp();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-line bg-paper md:bg-paper/90 md:backdrop-blur">
       <div className="container-page flex h-14 items-center justify-between gap-3">
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <StampLogo className="h-7 w-7" />
@@ -55,7 +55,7 @@ export function Navbar() {
 
       {/* mobile / mini-app bottom tabs */}
       <nav
-        className={`md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-line bg-paper/95 backdrop-blur flex ${
+        className={`md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-line bg-paper flex ${
           isMiniApp ? "pb-[env(safe-area-inset-bottom)]" : ""
         }`}
       >

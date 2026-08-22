@@ -11,10 +11,20 @@ import { shortAddress } from "@/lib/format";
  * - on the web: RainbowKit modal
  */
 export function ConnectControl() {
-  const { isMiniApp } = useMiniApp();
+  const { isMiniApp, ready } = useMiniApp();
   const { address, isConnected } = useAccount();
   const { connect, connectors, isPending } = useConnect();
   const { disconnect } = useDisconnect();
+
+  // Stable placeholder while we detect the Farcaster context —
+  // prevents the RainbowKit→Farcaster button swap flash on mobile.
+  if (!ready) {
+    return (
+      <button className="btn-primary !py-1.5" disabled>
+        Connect
+      </button>
+    );
+  }
 
   if (isMiniApp) {
     if (isConnected && address) {
