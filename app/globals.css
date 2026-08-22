@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-paper text-ink font-body antialiased;
+  background-image:
+    radial-gradient(rgba(34, 28, 20, 0.028) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+::selection {
+  background: #c73e1d;
+  color: #f8f3e8;
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+  }
+  .card {
+    @apply rounded-2xl border border-line bg-white/70 shadow-card backdrop-blur-sm;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-45;
+  }
+  .btn-primary {
+    @apply btn bg-accent text-paper hover:bg-accentdark active:scale-[.98];
+  }
+  .btn-secondary {
+    @apply btn border border-line bg-white/80 text-ink hover:border-faded active:scale-[.98];
+  }
+  .btn-ghost {
+    @apply btn text-faded hover:bg-parchment hover:text-ink;
+  }
+  .input {
+    @apply w-full rounded-xl border border-line bg-white/80 px-3.5 py-2.5 text-sm outline-none transition-colors placeholder:text-faded/60 focus:border-accent;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wider text-faded;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide;
+  }
+  .prose-docs h1 {
+    @apply font-display text-3xl font-bold mt-2 mb-4;
+  }
+  .prose-docs h2 {
+    @apply font-display text-xl font-bold mt-8 mb-3 border-b border-line pb-2;
+  }
+  .prose-docs h3 {
+    @apply text-base font-bold mt-6 mb-2;
+  }
+  .prose-docs p {
+    @apply my-3 leading-relaxed text-[15px];
+  }
+  .prose-docs ul, .prose-docs ol {
+    @apply my-3 ml-5 space-y-1.5 text-[15px] leading-relaxed;
+  }
+  .prose-docs ul { @apply list-disc; }
+  .prose-docs ol { @apply list-decimal; }
+  .prose-docs code {
+    @apply rounded bg-parchment px-1.5 py-0.5 font-mono text-[13px] text-accentdark;
+  }
+  .prose-docs pre {
+    @apply my-4 overflow-x-auto rounded-xl border border-line bg-ink p-4 text-[13px] leading-relaxed;
+  }
+  .prose-docs pre code {
+    @apply bg-transparent p-0 text-paper;
+  }
+  .prose-docs table {
+    @apply my-4 w-full border-collapse text-sm;
+  }
+  .prose-docs th {
+    @apply border border-line bg-parchment px-3 py-2 text-left font-semibold;
+  }
+  .prose-docs td {
+    @apply border border-line px-3 py-2 align-top;
+  }
+  .prose-docs a {
+    @apply font-semibold text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent;
+  }
+  .prose-docs blockquote {
+    @apply my-4 rounded-r-xl border-l-4 border-gold bg-parchment/70 px-4 py-3 text-[14px];
+  }
+}
