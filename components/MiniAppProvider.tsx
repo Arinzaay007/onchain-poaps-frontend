@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -14,14 +15,24 @@ interface MiniAppState {
   isMiniApp: boolean;
   /** resolved after first check */
   ready: boolean;
+  /** whether the user has added the Mini App to their apps */
+  added: boolean;
+  /** trigger the native "Add Mini App" sheet (must be called from a user gesture) */
+  promptAdd: () => Promise<boolean>;
 }
 
-const Ctx = createContext<MiniAppState>({ isMiniApp: false, ready: false });
+const Ctx = createContext<MiniAppState>({
+  isMiniApp: false,
+  ready: false,
+  added: true,
+  promptAdd: async () => false,
+});
 
 export function MiniAppProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<MiniAppState>({
+  const [state, setState] = useState({
     isMiniApp: false,
     ready: false,
+    added: true, // assume added until proven otherwise (avoids banner flash)
   });
 
   useEffect(() => {
@@ -30,29 +41,35 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
       try {
         const isMiniApp = await sdk.isInMiniApp();
         if (cancelled) return;
-        setState({ isMiniApp, ready: true });
-        if (isMiniApp) {
-          // Hide the Farcaster splash screen once the app has rendered
-          await sdk.actions.ready();
-          // Prompt to add the Mini App — once, and only if not already added.
-          try {
-            const ctx = await sdk.context;
-            const alreadyPrompted = localStorage.getItem("op:addPrompted");
-            if (!ctx?.client?.added && !alreadyPrompted) {
-              localStorage.setItem("op:addPrompted", "1");
-              // slight delay so the user sees the app before the sheet appears
-              setTimeout(() => {
-                sdk.actions.addMiniApp().catch(() => {
-                  /* user dismissed or invalid context — never block the app */
-                });
-              }, 1500);
-            }
-          } catch {
-            /* context unavailable — skip the prompt */
-          }
+        if (!isMiniApp) {
+          setState({ isMiniApp: false, ready: true, added: true });
+          return;
+        }
+        // Hide the Farcaster splash screen once the app has rendered
+        await sdk.actions.ready();
+        let added = true;
+        try {
+          const ctx = await sdk.context;
+          added = !!ctx?.client?.added;
+        } catch {
+          /* context unavailable — keep banner hidden */
+        }
+        if (cancelled) return;
+        setState({ isMiniApp: true, ready: true, added });
+        // gentle one-time auto-prompt (banner remains as the reliable path)
+        if (!added && !localStorage.getItem("op:addPrompted")) {
+          localStorage.setItem("op:addPrompted", "1");
+          setTimeout(() => {
+            sdk.actions
+              .addMiniApp()
+              .then(() => setState((s) => ({ ...s, added: true })))
+              .catch(() => {
+                /* dismissed — banner still available */
+              });
+          }, 1500);
         }
       } catch {
-        if (!cancelled) setState({ isMiniApp: false, ready: true });
+        if (!cancelled) setState({ isMiniApp: false, ready: true, added: true });
       }
     })();
     return () => {
@@ -60,7 +77,19 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  return <Ctx.Provider value={state}>{children}</Ctx.Provider>;
+  const promptAdd = useCallback(async () => {
+    try {
+      await sdk.actions.addMiniApp();
+      setState((s) => ({ ...s, added: true }));
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  return (
+    <Ctx.Provider value={{ ...state, promptAdd }}>{children}</Ctx.Provider>
+  );
 }
 
 export function useMiniApp() {

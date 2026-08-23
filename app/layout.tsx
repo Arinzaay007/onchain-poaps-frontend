@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { AddAppBanner } from "@/components/AddAppBanner";
 
 const display = Fraunces({
   subsets: ["latin"],
@@ -63,6 +64,7 @@ export default function RootLayout({
       >
         <Providers>
           <Navbar />
+          <AddAppBanner />
           <main className="flex-1">{children}</main>
           <Footer />
         </Providers>
