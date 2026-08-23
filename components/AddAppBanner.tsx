@@ -12,6 +12,7 @@ export function AddAppBanner() {
   const { isMiniApp, ready, added, promptAdd } = useMiniApp();
   const [hidden, setHidden] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
 
   if (!ready || !isMiniApp || added || hidden) return null;
 
@@ -22,16 +23,20 @@ export function AddAppBanner() {
           📌
         </span>
         <p className="min-w-0 flex-1 truncate text-xs font-semibold text-ink">
-          Keep Onchain POAPs one tap away
+          {err ? `Couldn't add (${err}) — try again` : "Keep Onchain POAPs one tap away"}
         </p>
         <button
           className="btn-primary !px-3 !py-1 !text-xs"
           disabled={busy}
           onClick={async () => {
             setBusy(true);
-            const ok = await promptAdd();
+            setErr(null);
+            const res = await promptAdd();
             setBusy(false);
-            if (!ok) setHidden(true); // dismissed — don't nag this session
+            if (!res.ok) {
+              if (res.error === "RejectedByUser") setHidden(true); // user said no — don't nag
+              else setErr(res.error ?? "unknown");
+            }
           }}
         >
           {busy ? "…" : "Add app"}

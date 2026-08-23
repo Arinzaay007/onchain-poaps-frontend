@@ -18,14 +18,14 @@ interface MiniAppState {
   /** whether the user has added the Mini App to their apps */
   added: boolean;
   /** trigger the native "Add Mini App" sheet (must be called from a user gesture) */
-  promptAdd: () => Promise<boolean>;
+  promptAdd: () => Promise<{ ok: boolean; error?: string }>;
 }
 
 const Ctx = createContext<MiniAppState>({
   isMiniApp: false,
   ready: false,
   added: true,
-  promptAdd: async () => false,
+  promptAdd: async () => ({ ok: false }),
 });
 
 export function MiniAppProvider({ children }: { children: ReactNode }) {
@@ -77,13 +77,14 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const promptAdd = useCallback(async () => {
+  const promptAdd = useCallback(async (): Promise<{ ok: boolean; error?: string }> => {
     try {
       await sdk.actions.addMiniApp();
       setState((s) => ({ ...s, added: true }));
-      return true;
-    } catch {
-      return false;
+      return { ok: true };
+    } catch (e) {
+      const name = e instanceof Error ? e.name || e.message : String(e);
+      return { ok: false, error: name };
     }
   }, []);
 

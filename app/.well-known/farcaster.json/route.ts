@@ -20,9 +20,9 @@ export function GET() {
       buttonTitle: "🪙 Open Onchain POAPs",
       splashImageUrl: `${APP_URL}/splash.png`,
       splashBackgroundColor: "#f8f3e8",
-      subtitle: "Proof of attendance, forever onchain",
+      subtitle: "Attendance, stamped onchain",
       description:
-        "Create, distribute, mint and collect POAPs whose SVG artwork and metadata live 100% onchain on Base. Public mints, allowlists, QR-code signature claims and a collection gallery.",
+        "Create, distribute and collect POAPs that live 100% onchain on Base. Public mints, allowlists, QR signature claims at live events, and a stamp-album gallery.",
       primaryCategory: "social",
       tags: ["poap", "events", "base", "nft", "onchain"],
       tagline: "Stamp your attendance onchain",
