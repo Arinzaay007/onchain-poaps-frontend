@@ -56,18 +56,6 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
         }
         if (cancelled) return;
         setState({ isMiniApp: true, ready: true, added });
-        // gentle one-time auto-prompt (banner remains as the reliable path)
-        if (!added && !localStorage.getItem("op:addPrompted")) {
-          localStorage.setItem("op:addPrompted", "1");
-          setTimeout(() => {
-            sdk.actions
-              .addMiniApp()
-              .then(() => setState((s) => ({ ...s, added: true })))
-              .catch(() => {
-                /* dismissed — banner still available */
-              });
-          }, 1500);
-        }
       } catch {
         if (!cancelled) setState({ isMiniApp: false, ready: true, added: true });
       }
