@@ -1,0 +1,297 @@
+/**
+ * Builds a SINGLE self-contained, dependency-free HTML file that reads the
+ * Onchain POAPs contract directly over JSON-RPC against a public Base RPC.
+ *
+ *  - No build step at runtime, no bundler, no node_modules, no server, no DB.
+ *  - One <script> that talks to the chain with plain fetch (eth_call / getLogs).
+ *  - Survives Vercel / any host dying: publish the file to IPFS, Arweave,
+ *    GitHub Pages, or anywhere static.
+ *
+ * This is the "unstoppable" export — postage stamps that can't be taken down.
+ */
+import { writeFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const projectRoot = path.resolve(__dirname, "..");
+
+// ---- read the contract config so the export always matches the app source of truth ----
+const contractPath = path.join(projectRoot, "lib", "contract.ts");
+const contractSrc = await readContract(contractPath);
+
+// Extract the deployed address (Base Sepolia default) and chain id from the source.
+const addrMatch = contractSrc.match(/"0x([0-9a-fA-F]{40})"/);
+const address = addrMatch ? addrMatch[0].replace(/"/g, "") : "0xC3249356a483fbe17d5355D39105D2eA666d9de6";
+
+const CHAIN_ID = 84532; // Base Sepolia
+// Multiple CORS-open public RPCs — if one rate-limits or dies, the next takes over.
+const RPCS = ["https://sepolia.base.org", "https://base-sepolia-rpc.publicnode.com"];
+const EXPLORER_URL = "https://sepolia.basescan.org";
+
+const html = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Onchain POAPs · unstoppable explorer</title>
+<style>
+:root{--paper:#f8f3e8;--ink:#221c14;--faded:#6f6353;--line:#d9cdb6;--accent:#c73e1d;--gold:#b98a2e;--stamp:#345e94;--mint:#3d7a4f}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);
+ background-image:radial-gradient(rgba(34,28,20,0.035) 1px,transparent 1px);background-size:22px 22px;padding:24px 16px 60px}
+.wrap{max-width:1080px;margin:0 auto}
+.badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.gold{border:1px solid #e5cf9a;background:#f7ead0;color:#8a6216}
+.mint{border:1px solid #cfe3d4;background:#eaf4ec;color:#2c5a3c}
+h1{font-family:Georgia,serif;font-size:40px;line-height:1;margin:18px 0 8px;font-weight:900}
+h1 span{color:var(--accent)}
+.sub{color:var(--faded);font-size:15px;max-width:620px}
+.head{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between}
+.hint{font-size:13px;color:var(--faded);font-family:ui-monospace,Menlo,monospace}
+button{cursor:pointer;border:1px solid var(--line);border-radius:12px;background:#fff;padding:9px 14px;font-weight:600;font-size:14px}
+button.primary{background:var(--accent);color:var(--paper);border-color:#9c2f14}
+button:disabled{opacity:.5;cursor:wait}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;margin-top:14px}
+.card{background:#fffdf6;border:1px solid var(--line);border-radius:16px;padding:18px;text-align:center;box-shadow:0 2px 10px rgba(34,28,20,.05)}
+.border{border:3px dashed #c9b98f;border-radius:50%;padding:10px;display:inline-block;line-height:0}
+.art{width:130px;height:130px;border-radius:50%;object-fit:cover;display:block}
+.name{font-family:Georgia,serif;font-weight:700;font-size:17px;margin-top:12px}
+.meta{font-size:12px;color:var(--faded);margin-top:4px}
+.flag{display:inline-flex;gap:6px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+.seal{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-radius:999px;padding:3px 10px}
+.lock{background:#e9effa;color:var(--stamp);border:1px solid #c4d3ee}
+.live{background:#eaf4ec;color:var(--mint);border:1px solid #cfe3d4}
+.off{background:#f0ece2;color:var(--faded);border:1px solid var(--line)}
+.status{font-size:12px;color:var(--faded);margin-top:12px}
+a{color:var(--accent)}
+.empty{grid-column:1/-1;text-align:center;color:var(--faded);padding:50px 0}
+footer{margin-top:40px;border-top:1px solid var(--line);padding-top:18px;text-align:center;font-size:12px;color:var(--faded)}
+.contract{font-family:ui-monospace,Menlo,monospace;font-size:11px;word-break:break-all;margin-top:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading{width:34px;height:34px;border:4px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .9s linear infinite;margin:20px auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div>
+      <span class="badge gold">100% onchain · no server · no IPFS</span>
+      <h1>Onchain <span>POAPs</span></h1>
+      <p class="sub">A zero-dependency wallet-less explorer that reads every POAP straight off the ${chainLabel(CHAIN_ID)} contract. This single file works forever — host it anywhere, even offline from IPFS.</p>
+    </div>
+    <button id="refresh" class="primary">↻ Refresh</button>
+  </div>
+
+  <div id="status" class="hint">Reading onchain…</div>
+  <div id="loading"><div class="loading"></div></div>
+
+  <div class="toolbar" id="filters"></div>
+  <div class="grid" id="grid"></div>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+(function(){
+const ADDRESS="${address}";
+const RPCS=${JSON.stringify(RPCS)};
+const CHAIN=${CHAIN_ID};
+const EXPLORER="${EXPLORER_URL}";
+const $=function(s){return document.querySelector(s)};
+
+// -- minimal JSON-RPC helpers (no libraries, no dependencies) --
+// Round-robins across several public RPCs and retries, so a single rate-limit
+// or outage never keeps the explorer from reading the chain.
+async function rpc(method,params){
+  let lastErr;
+  for(let attempt=0;attempt<3;attempt++){
+    const rpcUrl=RPCS[attempt%RPCS.length];
+    try{
+      const r=await fetch(rpcUrl,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method,params})});
+      const j=await r.json();
+      if(j.error)throw new Error(j.error.message);
+      return j.result;
+    }catch(e){
+      lastErr=e;
+      await new Promise(res=>setTimeout(res,300*(attempt+1)));
+    }
+  }
+  throw lastErr||new Error("RPC unreachable");
+}
+async function call(to,data){
+  const hex=await rpc("eth_call",[{to,data},"latest"]);
+  return hex;
+}
+// encode a single-arg function call, selector = first 4 bytes of keccak (precomputed)
+function argCall(selector,abiType,arg){
+  // abi.encodePacked-free: for uint256 & address encode as 32-byte word
+  let word;
+  if(abiType==="uint256") word=toWord(arg);
+  else if(abiType==="address") word="0x".concat("0".repeat(24),arg.slice(2).toLowerCase());
+  return selector+word.slice(2);
+}
+function toWord(n){
+  let hex=BigInt(n).toString(16);
+  hex=hex.length%2?"0"+hex:hex;
+  return "0x"+hex.padStart(64,"0");
+}
+// parse a fixed-size hex word (no 0x) into a BigInt
+function hexToBigInt(word){return BigInt("0x"+word)}
+// decode a uint256 return
+const UINT=(hex)=>BigInt(hex);
+// decode a string return (solidity ABI string)
+function decodeString(hex){
+  const off=BigInt("0x"+hex.slice(2,66));
+  const len=Number(BigInt("0x"+hex.slice(2+Number(off)*2,2+Number(off)*2+64)));
+  const data=hex.slice(2+Number(off)*2+64,2+Number(off)*2+64+len*2);
+  let s="";
+  for(let i=0;i<data.length;i+=2)s+=String.fromCharCode(parseInt(data.substr(i,2),16));
+  try{return JSON.parse(s)}catch(e){return null}
+}
+function decodeAddress(hex){return "0x"+hex.slice(26)}
+
+// -- contract views --
+// selectors verified with viem toFunctionSelector (see scripts/build-unstoppable.mjs)
+const SEL={ total:"0xba870686", events:"0x0b791430", uri:"0x0e89341c", supply:"0xbd85b039", has:"0x873f6f9e" };
+// selectors: totalEvents(), events(uint256), uri(uint256), totalSupply(uint256), hasClaimed(uint256,address)
+
+const state={total:null,filter:"all",events:[],avatars:{}};
+// bit flags: 0 none,1 soulbound,2 public,3 both
+function decodeFlags(flags){return({soulbound:(Number(flags)&1)===1,isPublic:(Number(flags)&2)===2})}
+function flagsOf(flags){const d=decodeFlags(flags);return d.soulbound?"soulbound":"transferable"}
+
+async function fetchAll(){
+  try{
+    const totalHex=await call(ADDRESS,SEL.total);
+    state.total=Number(UINT(totalHex));
+    const ids=[];for(let i=0;i<=state.total;i++)ids.push(i);
+    $("#loading").style.display="none";
+    $("#status").textContent=(state.total+1)+" POAPs registered onchain · read live from "+chainLabel(CHAIN);
+    renderFilters();
+    // Load events with a small concurrency cap so public RPCs don't rate-limit us.
+    for(let i=0;i<ids.length;i+=4){
+      await Promise.all(ids.slice(i,i+4).map(loadEvent));
+      await new Promise(res=>setTimeout(res,120));
+    }
+    render();
+    console.log("unstoppable-loaded", state.events.length);
+  }catch(e){
+    console.error("unstoppable-error", e);
+    $("#loading").style.display="none";
+    $("#status").textContent=(e&&e.message?"RPC/read error: "+(e.message.split("\\n")[0])+" — retrying works. ":"Couldn't reach the RPC. ")+"This static file is still intact.";
+  }
+}
+
+async function loadEvent(id){
+  try{
+    const evHex=await call(ADDRESS,SEL.events+toWord(id).slice(2));
+    const ev=parseEvent(evHex);
+    ev.id=id;
+    const uriHex=await call(ADDRESS,SEL.uri+toWord(id).slice(2));
+    const meta=decodeString(uriHex);
+    ev.name=meta?meta.name:("POAP #"+id);
+    ev.desc=meta&&meta.description?meta.description:"";
+    ev.image=meta&&meta.image?meta.image:null;
+    const supHex=await call(ADDRESS,SEL.supply+toWord(id).slice(2));
+    ev.supply=Number(UINT(supHex));
+    state.events.push(ev);
+    renderOne(ev);
+  }catch(e){console.log("unstoppable-skip", id, e&&e.message)}
+}
+
+// events(uint256) => (string,string,uint256,string,bytes32,bytes32,address,uint256,string,bool,bool)
+function parseEvent(hex){
+  const parts=[];
+  let off=0;
+  function word(){
+    const w=hex.slice(2+off*2,2+off*2+64);off+=32;return w;
+  }
+  // 11 outputs (dynamic/static mix). We only need staticish ones + flags + soulbound/public.
+  // Reconstruct simply by walking the fixed layout: array of 32-byte pointers/values.
+  const w0=word(),w1=word(),w2=word(),w3=word(),w4=word(),w5=word(),w6=word(),w7=word(),w8=word(),w9=word(),w10=word();
+  const creator=decodeAddress(w6);
+  const createdAt=hexToBigInt(w7);
+  const soulbound=(Number(hexToBigInt(w9))===1);
+  const isPublic=(Number(hexToBigInt(w10))===1);
+  const hasRoot=(hexToBigInt(w4)!==0n);
+  return {creator,createdAt,isSoulbound:soulbound,isPublic,hasRoot};
+}
+
+function renderFilters(){
+  const f=[["all","All"],["mint","Mintable now"],["public","Public"],["allowlist","Allowlist"],["soul","Soulbound"]];
+  const bar=$("#filters");bar.innerHTML="";
+  f.forEach(([k,label])=>{
+    const b=document.createElement("button");
+    b.textContent=label;
+    b.onclick=()=>{state.filter=k;render()};
+    b.id="f-"+k;
+    bar.appendChild(b);
+  });
+  render();
+}
+
+function passes(ev){
+  if(state.filter==="mint") return ev.isPublic||ev.hasRoot;
+  if(state.filter==="public") return ev.isPublic;
+  if(state.filter==="allowlist") return ev.hasRoot;
+  if(state.filter==="soul") return ev.isSoulbound;
+  return true;
+}
+
+function renderOne(ev){
+  if(!ev._rendered){ev._rendered=true;render();}
+}
+
+function render(){
+  ["all","mint","public","allowlist","soul"].forEach(k=>{
+    const el=document.getElementById("f-"+k);if(el)el.style.borderColor=k===state.filter?"#c73e1d":"";
+  });
+  const grid=$("#grid");grid.innerHTML="";
+  const list=state.events.slice().sort((a,b)=>b.id-a.id).filter(passes);
+  if(list.length===0){grid.innerHTML='<div class="empty">No POAPs match this filter (or still loading).</div>';return;}
+  list.forEach(ev=>{
+    const d=document.createElement("div");d.className="card";
+    const img=ev.image?('<img class="art" src="'+ev.image+'" alt=""/>'):('<div class="border"><div class="art" style="background:#efe6d2"></div></div>');
+    d.innerHTML=
+      '<div class="border">'+img+'</div>'+
+      '<div class="name">'+esc(ev.name)+'</div>'+
+      '<div class="meta">#'+ev.id+' · '+ev.supply+' minted · by '+short(ev.creator)+'</div>'+
+      '<div class="flag">'+
+        '<span class="seal '+(ev.isSoulbound?"lock":"off")+'">'+(ev.isSoulbound?"🔒 soulbound":"⇄ transferable")+'</span>'+
+        (ev.isPublic?'<span class="seal live">public</span>':'')+
+        (ev.hasRoot?'<span class="seal live">allowlist</span>':'')+
+      '</div>'+
+      '<div class="status"><a href="'+EXPLORER+'/token/'+ADDRESS+'?a='+ev.id+'" target="_blank" rel="noreferrer">View on BaseScan ↗</a> · <a href="'+EXPLORER+'/address/'+ADDRESS+'#code" target="_blank" rel="noreferrer">contract</a></div>';
+    grid.appendChild(d);
+  });
+}
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function short(a){return a.slice(0,6)+"…"+a.slice(-4)}
+function chainLabel(id){return id===84532?"Base Sepolia":"Base"}
+
+$("#refresh").onclick=fetchAll;
+fetchAll();
+$("#foot").innerHTML='Stamped, not stored. ✦ Contract '+short(ADDRESS)+' · Base Sepolia · this file is a single self-contained HTML that talks directly to the chain.';
+})();
+</script>
+</body>
+</html>`;
+
+const out = path.join(projectRoot, "public", "unstoppable.html");
+await writeFile(out, html, "utf8");
+console.log(`✔ Wrote unstoppable explorer → ${out} (${(html.length / 1024).toFixed(1)} KB)`);
+console.log(`  contract: ${address} · chain ${CHAIN_ID} · rpcs: ${RPCS.join(", ")}`);
+
+async function readContract(p) {
+  try {
+    return await (await import("node:fs/promises")).readFile(p, "utf8");
+  } catch {
+    return "";
+  }
+}
+function chainLabel(id) {
+  return id === 84532 ? "Base Sepolia" : `Base`;
+}

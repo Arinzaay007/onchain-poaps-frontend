@@ -31,6 +31,7 @@ import {
 } from "@/lib/contract";
 import { composeCast, useMiniApp } from "@/components/MiniAppProvider";
 import { useCollectors } from "@/lib/activity";
+import { AttestationCard } from "@/components/AttestationCard";
 
 export function PoapDetail({ id }: { id: string }) {
   const eventId = useMemo(() => {
@@ -61,6 +62,13 @@ export function PoapDetail({ id }: { id: string }) {
     address && address.toLowerCase() === event.creator.toLowerCase();
   const multichainId = `eip155:${ACTIVE_CHAIN.id}:${POAP_ADDRESS.toLowerCase()}:${event.id}`;
 
+  const collectors = useCollectors(event.id, event.createdAt);
+  const me = address
+    ? collectors.data?.records.find(
+        (r) => r.recipient.toLowerCase() === address.toLowerCase(),
+      )
+    : undefined;
+
   return (
     <div className="container-page py-10">
       <Link href="/explore" className="text-sm font-semibold text-faded hover:text-ink">
@@ -70,12 +78,20 @@ export function PoapDetail({ id }: { id: string }) {
       <div className="mt-4 grid gap-8 lg:grid-cols-[380px,1fr]">
         {/* Left: artwork */}
         <div className="flex flex-col items-center">
-          <div className="card flex w-full flex-col items-center p-8">
-            <PoapStamp image={metadata?.image} alt={event.name} size="lg" />
-            <p className="mt-4 font-mono text-xs text-faded">
-              #{event.id.toString()} · {supply?.toString() ?? "…"} minted
-            </p>
-            <div className="mt-2">
+          <div className="card relative overflow-hidden p-9">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
+            <PoapStamp
+              image={metadata?.image}
+              alt={event.name}
+              size="lg"
+              sealed={event.isSoulbound}
+            />
+            <div className="mt-5 flex items-center justify-center gap-2 font-mono text-xs text-faded">
+              <span className="text-ink">#{event.id.toString()}</span>
+              <span className="text-line">·</span>
+              <span>{supply?.toString() ?? "…"} minted</span>
+            </div>
+            <div className="mt-2.5">
               <SoulboundBadge soulbound={event.isSoulbound} />
             </div>
           </div>
@@ -136,6 +152,17 @@ export function PoapDetail({ id }: { id: string }) {
 
           {/* Collectors */}
           <CollectorsCard event={event} supply={supply} />
+
+          {/* Proof of attendance receipt (only if I've minted) */}
+          {me && (
+            <AttestationCard
+              event={event}
+              metadata={metadata}
+              collectorNo={me.position.toString()}
+              txHash={me.txHash}
+              supply={supply}
+            />
+          )}
 
           {/* Timing */}
           <div className="card p-5">

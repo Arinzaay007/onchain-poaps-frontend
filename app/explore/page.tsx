@@ -38,9 +38,12 @@ export default function ExplorePage() {
 
   return (
     <div className="container-page py-10">
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl font-black">Explore POAPs</h1>
+          <span className="eyebrow">The catalogue</span>
+          <h1 className="mt-1 font-display text-3xl font-black sm:text-4xl">
+            Explore POAPs
+          </h1>
           <p className="mt-1 text-sm text-faded">
             Every POAP registered on the contract, newest first.
           </p>
@@ -60,7 +63,7 @@ export default function ExplorePage() {
               onClick={() => setFilter(f)}
               className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
                 filter === f
-                  ? "bg-ink text-paper"
+                  ? "bg-ink text-paper shadow-card"
                   : "border border-line bg-white/70 text-faded hover:text-ink"
               }`}
             >

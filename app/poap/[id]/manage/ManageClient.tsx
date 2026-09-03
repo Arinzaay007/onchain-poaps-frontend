@@ -91,7 +91,7 @@ export function ManageClient({ id }: { id: string }) {
 
       <div className="mt-4 flex items-center gap-4">
         <PoapStamp image={metadata?.image} alt={event.name} size="sm" />
-        <div>
+        <div className="flex-1">
           <h1 className="font-display text-2xl font-black">{event.name}</h1>
           <p className="text-sm text-faded">
             #{id} · {supply?.toString() ?? "…"} minted ·{" "}
@@ -106,6 +106,13 @@ export function ManageClient({ id }: { id: string }) {
             )}
           </p>
         </div>
+        <Link
+          href={`/poap/${id}/kiosk`}
+          className="btn-primary shrink-0 !py-2 !text-sm"
+          title="Open the fullscreen live-event sign-and-show-QR screen"
+        >
+          Launch kiosk
+        </Link>
       </div>
 
       {!windowOpen && (
