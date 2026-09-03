@@ -10,6 +10,7 @@ import { IS_TESTNET } from "@/lib/contract";
 const links = [
   { href: "/explore", label: "Explore" },
   { href: "/create", label: "Create" },
+  { href: "/steward", label: "Steward" },
   { href: "/verify", label: "Verify" },
   { href: "/gallery", label: "My Collection" },
   { href: "/docs", label: "Docs" },
@@ -69,11 +70,20 @@ function TabDocs() {
     </svg>
   );
 }
+function TabSteward() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" {...stroke}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M10 9h4M10 13h4" />
+    </svg>
+  );
+}
 
 const tabIcons: Record<string, ReactNode> = {
   "/": <TabHome />,
   "/explore": <TabExplore />,
   "/create": <TabCreate />,
+  "/steward": <TabSteward />,
   "/verify": <TabVerify />,
   "/gallery": <TabCollection />,
   "/docs": <TabDocs />,
@@ -129,7 +139,7 @@ export function Navbar() {
           isMiniApp ? "pb-[env(safe-area-inset-bottom)]" : ""
         }`}
       >
-        {[{ href: "/", label: "Home" }, ...links].map((l) => (
+        {[{ href: "/", label: "Home" }, { href: "/explore", label: "Explore" }, { href: "/create", label: "Create" }, { href: "/steward", label: "Steward" }, { href: "/gallery", label: "Collection" }, { href: "/docs", label: "Docs" }].map((l) => (
           <Link
             key={l.href}
             href={l.href}
@@ -141,7 +151,7 @@ export function Navbar() {
             }`}
           >
             {tabIcons[l.href]}
-            <span>{l.label === "My Collection" ? "Collection" : l.label}</span>
+            <span>{l.label}</span>
           </Link>
         ))}
       </nav>

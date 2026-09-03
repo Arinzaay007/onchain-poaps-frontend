@@ -30,7 +30,8 @@ export function Footer() {
           <Link href="/verify" className="hover:text-paper">Verify</Link>
           <Link href="/docs" className="hover:text-paper">Docs</Link>
           <Link href="/gallery" className="hover:text-paper">My collection</Link>
-          <Link href="/create" className="hover:text-paper">Stamp Studio</Link>
+          <Link href="/steward" className="hover:text-paper">Steward</Link>
+          <Link href="/unstoppable" className="hover:text-paper">Unstoppable export</Link>
           <a
             href={`${EXPLORER_URL}/address/${POAP_ADDRESS}#code`}
             target="_blank"
@@ -47,9 +48,6 @@ export function Footer() {
           >
             Protocol repo ↗
           </a>
-          <Link href="/unstoppable" className="hover:text-paper">
-            Unstoppable export ↗
-          </Link>
         </div>
       </div>
 
