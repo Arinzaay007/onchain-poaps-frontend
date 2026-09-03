@@ -106,7 +106,7 @@ export function PoapStamp({
       {/* soulbound lock badge (top-left) */}
       {sealed && (
         <div
-          className="pointer-events-none absolute left-0 top-0 flex items-center justify-center rounded-full border border-stamp/40 bg-paper/95 shadow-md"
+          className="pointer-events-none absolute left-0 top-0 flex items-center justify-center rounded-full border border-stamp/40 bg-surf/95 shadow-md"
           style={{ width: px * 0.26, height: px * 0.26 }}
         >
           <svg

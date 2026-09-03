@@ -10,7 +10,10 @@ const config: Config = {
     extend: {
       colors: {
         // Theme tokens driven by CSS variables so light + dark mode both work.
+        // paper = warm cream (always light — used as light TEXT on dark surfaces).
+        // surf  = the page/element SURFACE, which flips light↔dark.
         paper: "rgb(var(--c-paper) / <alpha-value>)",
+        surf: "rgb(var(--c-surf) / <alpha-value>)",
         parchment: "rgb(var(--c-parchment) / <alpha-value>)",
         ink: "rgb(var(--c-ink) / <alpha-value>)",
         faded: "rgb(var(--c-faded) / <alpha-value>)",

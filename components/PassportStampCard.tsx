@@ -50,7 +50,7 @@ export function PassportStampCard({ item }: { item: PoapListItem }) {
 
       <div className="relative flex flex-col items-center">
         <div className="flex w-full items-center justify-between text-[10px] font-bold uppercase tracking-[0.18em] text-faded">
-          <span className="rounded-full border border-line bg-paper px-2 py-0.5">
+          <span className="rounded-full border border-line bg-surf px-2 py-0.5">
             Page {String(item.event.id).padStart(2, "0")}
           </span>
           {mine && (

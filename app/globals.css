@@ -2,31 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---- Light theme (paper / postage stamp) ---- */
 :root {
   color-scheme: light;
-  --c-paper: 248 243 232;
-  --c-parchment: 241 233 216;
-  --c-ink: 34 28 20;
-  --c-faded: 111 99 83;
-  --c-line: 217 205 182;
+  --c-paper: 248 243 232;      /* warm cream (light text on dark) */
+  --c-surf: 248 243 232;       /* page surface */
+  --c-parchment: 241 233 216;  /* raised paper */
+  --c-ink: 34 28 20;           /* near-black ink */
+  --c-faded: 111 99 83;        /* muted sepia */
+  --c-line: 217 205 182;       /* hairline */
   --c-white: 255 255 255;
 }
 
-/* Dark mode — flips surfaces/text via the theme variables.
-   Brand colors (accent/stamp/gold/mint) and the existing dark panels
-   (footer, kiosk, steward header, passport cover) are untouched. */
+/* ---- Dark theme (midnight / night-book, warm not cold) ---- */
 .dark {
   color-scheme: dark;
-  --c-parchment: 33 29 24;
-  --c-ink: 232 225 212;
-  --c-faded: 171 159 139;
-  --c-line: 55 49 41;
-  --c-white: 35 31 26;
+  --c-paper: 240 234 221;      /* cream stays light for text on dark */
+  --c-surf: 21 18 14;          /* deep warm charcoal page */
+  --c-parchment: 33 29 24;     /* raised dark panel */
+  --c-ink: 233 226 213;        /* warm off-white text */
+  --c-faded: 165 152 133;      /* muted warm */
+  --c-line: 60 52 43;          /* hairline */
+  --c-white: 40 35 29;
 }
 
 body {
-  @apply bg-paper text-ink font-body antialiased;
-  /* warm paper grain + a faint torn-paper edge */
+  @apply bg-surf text-ink font-body antialiased;
   background-image:
     radial-gradient(rgba(34, 28, 20, 0.032) 1px, transparent 1.2px),
     radial-gradient(circle at 12% -2%, rgba(185, 138, 46, 0.06), transparent 42%),
@@ -34,46 +35,46 @@ body {
   background-size: 22px 22px, 100% 100%, 100% 100%;
 }
 
+/* dark grain is subtle & light-toned so it reads on charcoal */
 .dark body {
-  background-color: #15130f;
-  color: #e9e3d6;
+  background-color: #15120e;
   background-image:
-    radial-gradient(rgba(233, 227, 214, 0.05) 1px, transparent 1.2px),
+    radial-gradient(rgba(240, 234, 221, 0.045) 1px, transparent 1.2px),
     radial-gradient(circle at 12% -2%, rgba(185, 138, 46, 0.08), transparent 42%),
-    radial-gradient(circle at 92% 8%, rgba(199, 62, 29, 0.06), transparent 40%);
+    radial-gradient(circle at 92% 8%, rgba(206, 72, 39, 0.07), transparent 40%);
 }
 
-/* Guard: the few explicit light surfaces / dark pills that must not flip. */
-.dark .bg-paper,
-.dark .bg-paper\/90,
-.dark .bg-paper\/95 {
-  background-color: #15130f;
-}
-/* Keep the dark "active" pills and code blocks dark in dark mode. */
-.dark .bg-ink { background-color: #0d0b08; }
-.dark .bg-ink\/30 { background-color: rgba(0, 0, 0, 0.3); }
+/* accents brighten a touch for contrast on dark */
+.dark .text-accent { color: #e2623c; }
+.dark .text-gold { color: #d3a94a; }
+.dark .text-mint { color: #5eaf77; }
+.dark .text-stamp { color: #6ea1e0; }
 
 ::selection {
   background: #c73e1d;
   color: #f8f3e8;
 }
+.dark ::selection { background: #d0481f; color: #f6f0e1; }
 
 @layer components {
   .container-page {
     @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
   }
 
-  /* ---- Primary surface: a pressed paper card with a soft top light ---- */
+  /* ---- Card: pressed paper in light, soft raised panel in dark ---- */
   .card {
     @apply rounded-2xl border border-line/90 bg-white/75 shadow-card md:backdrop-blur-sm;
     background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 36%);
   }
   .dark .card {
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0) 36%);
+    @apply bg-white/70;
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0) 40%);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 28px rgba(0, 0, 0, 0.35);
   }
   .card-hover {
     @apply transition-all hover:-translate-y-1 hover:shadow-lift hover:border-line;
   }
+  .dark .card-hover:hover { border-color: var(--c-faded); }
 
   /* ---- Buttons ---- */
   .btn {
@@ -89,12 +90,20 @@ body {
   .btn-secondary {
     @apply btn border border-line bg-white/60 text-ink hover:border-faded hover:bg-white shadow-[0_1px_0_rgba(255,255,255,.6)_inset] active:scale-[.98];
   }
+  .dark .btn-secondary {
+    @apply border-line/70 bg-white/40 hover:bg-white/60;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  }
   .btn-ghost {
     @apply btn text-faded hover:bg-parchment hover:text-ink;
   }
 
   .input {
     @apply w-full rounded-xl border border-line bg-white/80 px-3.5 py-2.5 text-sm shadow-[0_1px_0_rgba(255,255,255,.6)_inset] outline-none transition-colors placeholder:text-faded/60 focus:border-accent focus:ring-2 focus:ring-accent/15;
+  }
+  .dark .input {
+    @apply border-line/70 bg-white/30 text-ink focus:ring-accent/25;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
   }
   .label {
     @apply mb-1.5 block text-xs font-semibold uppercase tracking-wider text-faded;
@@ -109,31 +118,21 @@ body {
     @apply font-mono text-[11px] font-semibold uppercase tracking-[0.28em] text-gold;
   }
 
-  /* ---- A debossed stamp ring (postsage circle) for section markers ---- */
+  /* ---- A debossed stamp ring for section markers ---- */
   .stamp-ring {
     @apply inline-flex items-center justify-center rounded-full border-2 border-dashed border-accent/30 bg-accent/5;
   }
 
-  /* ---- Paper tape / marquee ---------- */
+  /* ---- Paper tape / marquee ---- */
   .tape {
     @apply bg-parchment/80;
   }
 
-  .prose-docs h1 {
-    @apply font-display text-3xl font-bold mt-2 mb-4;
-  }
-  .prose-docs h2 {
-    @apply font-display text-xl font-bold mt-8 mb-3 border-b border-line pb-2;
-  }
-  .prose-docs h3 {
-    @apply text-base font-bold mt-6 mb-2;
-  }
-  .prose-docs p {
-    @apply my-3 leading-relaxed text-[15px];
-  }
-  .prose-docs ul, .prose-docs ol {
-    @apply my-3 ml-5 space-y-1.5 text-[15px] leading-relaxed;
-  }
+  .prose-docs h1 { @apply font-display text-3xl font-bold mt-2 mb-4; }
+  .prose-docs h2 { @apply font-display text-xl font-bold mt-8 mb-3 border-b border-line pb-2; }
+  .prose-docs h3 { @apply text-base font-bold mt-6 mb-2; }
+  .prose-docs p { @apply my-3 leading-relaxed text-[15px]; }
+  .prose-docs ul, .prose-docs ol { @apply my-3 ml-5 space-y-1.5 text-[15px] leading-relaxed; }
   .prose-docs ul { @apply list-disc; }
   .prose-docs ol { @apply list-decimal; }
   .prose-docs code {
@@ -142,18 +141,10 @@ body {
   .prose-docs pre {
     @apply my-4 overflow-x-auto rounded-xl border border-line bg-ink p-4 text-[13px] leading-relaxed;
   }
-  .prose-docs pre code {
-    @apply bg-transparent p-0 text-paper;
-  }
-  .prose-docs table {
-    @apply my-4 w-full border-collapse text-sm;
-  }
-  .prose-docs th {
-    @apply border border-line bg-parchment px-3 py-2 text-left font-semibold;
-  }
-  .prose-docs td {
-    @apply border border-line px-3 py-2 align-top;
-  }
+  .prose-docs pre code { @apply bg-transparent p-0 text-paper; }
+  .prose-docs table { @apply my-4 w-full border-collapse text-sm; }
+  .prose-docs th { @apply border border-line bg-parchment px-3 py-2 text-left font-semibold; }
+  .prose-docs td { @apply border border-line px-3 py-2 align-top; }
   .prose-docs a {
     @apply font-semibold text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent;
   }
