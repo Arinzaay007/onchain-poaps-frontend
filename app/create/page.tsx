@@ -435,8 +435,47 @@ export default function CreatePage() {
           <section>
             <h2 className="font-display text-xl font-bold">Distribution</h2>
             <p className="mt-1 text-sm text-faded">
-              How should people get this POAP? You can combine methods — and
-              change public/allowlist settings for 30 days after registration.
+              How should people get this POAP? Pick a starting point below, then
+              fine-tune the options — you can combine methods and change
+              public/allowlist settings for 30 days after registration.
+            </p>
+
+            {/* one-tap presets */}
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              {[
+                {
+                  icon: "🌐",
+                  name: "Public meetup",
+                  desc: "Open to anyone · soulbound",
+                  apply: () => { setIsPublic(true); setIsSoulbound(true); setAllowlistMode("none"); },
+                },
+                {
+                  icon: "🔐",
+                  name: "VIP allowlist",
+                  desc: "Invite-only list · soulbound",
+                  apply: () => { setIsPublic(false); setIsSoulbound(true); setAllowlistMode("now"); },
+                },
+                {
+                  icon: "🎪",
+                  name: "Live-event drop",
+                  desc: "Signature QR at the door",
+                  apply: () => { setIsPublic(false); setIsSoulbound(true); setAllowlistMode("none"); },
+                },
+              ].map((p) => (
+                <button
+                  key={p.name}
+                  type="button"
+                  onClick={p.apply}
+                  className="card card-hover flex flex-col items-start gap-1 p-4 text-left"
+                >
+                  <span className="text-xl leading-none">{p.icon}</span>
+                  <span className="mt-1 font-display text-sm font-bold">{p.name}</span>
+                  <span className="text-xs leading-relaxed text-faded">{p.desc}</span>
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-center text-[11px] text-faded">
+              Tap a preset to auto-fill the options below — then adjust anything.
             </p>
 
             <div className="mt-4 space-y-3">
@@ -559,6 +598,29 @@ export default function CreatePage() {
               ⚠️ <b>Onchain is forever.</b> Name, artwork, description and the
               soulbound setting can never be changed after registration. Public
               mint and allowlist can only be adjusted during the first 30 days.
+            </div>
+
+            {/* pre-flight checklist */}
+            <div className="mt-4 rounded-xl border border-mint/30 bg-mint/5 p-3">
+              <p className="text-xs font-bold uppercase tracking-wider text-mint">
+                Ready to register
+              </p>
+              <ul className="mt-2 grid gap-1.5 text-xs leading-relaxed sm:grid-cols-2">
+                {[
+                  `Name${nameOk ? "" : " (required)"}`,
+                  `SVG${artworkOk ? "" : " (required)"}`,
+                  `Size ${formatBytes(svgBytes)}`,
+                  `≈ ${Math.round(gasEstimate / 1000)}k gas`,
+                  isSoulbound ? "Soulbound (permanent)" : "Transferable",
+                  isPublic ? "Public mint open" : "Public mint closed",
+                  allowlist ? `${allowlist.addresses.length}-wallet allowlist` : "No allowlist yet",
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-1.5">
+                    <span className="text-mint">✓</span>
+                    <span className="text-faded">{t}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             {tx.error && (
