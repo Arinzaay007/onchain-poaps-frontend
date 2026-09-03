@@ -141,14 +141,28 @@ function toWord(n){
 function hexToBigInt(word){return BigInt("0x"+word)}
 // decode a uint256 return
 const UINT=(hex)=>BigInt(hex);
-// decode a string return (solidity ABI string)
+// decode a string return (solidity ABI string) into the raw string
 function decodeString(hex){
   const off=BigInt("0x"+hex.slice(2,66));
   const len=Number(BigInt("0x"+hex.slice(2+Number(off)*2,2+Number(off)*2+64)));
   const data=hex.slice(2+Number(off)*2+64,2+Number(off)*2+64+len*2);
   let s="";
   for(let i=0;i<data.length;i+=2)s+=String.fromCharCode(parseInt(data.substr(i,2),16));
-  try{return JSON.parse(s)}catch(e){return null}
+  return s;
+}
+// base64 -> utf8 string (small, browser-native)
+function b64ToUtf8(b64){
+  const bin=atob(b64);
+  const bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+// uri() returns "data:application/json;base64,<json>"; decode to the JSON object
+function decodeMeta(hex){
+  const raw=decodeString(hex);
+  const marker="data:application/json;base64,";
+  if(!raw.startsWith(marker))return null;
+  try{return JSON.parse(b64ToUtf8(raw.slice(marker.length)))}catch(e){return null}
 }
 function decodeAddress(hex){return "0x"+hex.slice(26)}
 
@@ -190,8 +204,8 @@ async function loadEvent(id){
     const ev=parseEvent(evHex);
     ev.id=id;
     const uriHex=await call(ADDRESS,SEL.uri+toWord(id).slice(2));
-    const meta=decodeString(uriHex);
-    ev.name=meta?meta.name:("POAP #"+id);
+    const meta=decodeMeta(uriHex);
+    ev.name=meta&&meta.name?meta.name:("POAP "+id);
     ev.desc=meta&&meta.description?meta.description:"";
     ev.image=meta&&meta.image?meta.image:null;
     const supHex=await call(ADDRESS,SEL.supply+toWord(id).slice(2));

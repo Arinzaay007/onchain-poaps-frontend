@@ -166,6 +166,59 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Try it live — self-serve demo the judge can run in 10 seconds */}
+        <section className="mt-16">
+          <div className="mb-8 flex flex-col items-center text-center">
+            <span className="eyebrow">Try it live</span>
+            <h2 className="mt-2 font-display text-3xl font-black sm:text-4xl">
+              Every path, <span className="text-accent">one tap away</span>
+            </h2>
+            <p className="mt-3 max-w-xl text-sm text-faded">
+              No signup, no backend. Connect a wallet and run any of these
+              against the live contract on Base Sepolia.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                icon: "🪙",
+                t: "Mint a POAP",
+                d: "Pick a live public drop and mint one in a single tap. See the stamp land in your collection instantly.",
+                href: "/poap/4",
+              },
+              {
+                icon: "📋",
+                t: "Open an allowlist",
+                d: "Paste addresses, we build the Merkle tree, you get a proofs file + claim links per wallet. No math.",
+                href: "/poap/4/manage",
+              },
+              {
+                icon: "🎟",
+                t: "Run a live-event kiosk",
+                d: "Fullscreen door screen: grab an address, sign, show a QR, they mint. ~2 seconds per person.",
+                href: "/poap/4/kiosk",
+              },
+              {
+                icon: "🛰",
+                t: "Open the unstoppable export",
+                d: "A single self-contained HTML file that reads every POAP straight off-chain. Survives any host dying.",
+                href: "/unstoppable",
+              },
+            ].map((s) => (
+              <Link
+                key={s.t}
+                href={s.href}
+                className="card card-hover flex flex-col p-6"
+              >
+                <span className="text-3xl">{s.icon}</span>
+                <h3 className="mt-3 font-display text-lg font-bold">{s.t}</h3>
+                <p className="mt-1.5 flex-1 text-sm leading-relaxed text-faded">{s.d}</p>
+                <span className="mt-3 text-sm font-semibold text-accent">Open →</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         {/* Live activity + Recent POAPs */}
         <section className="mt-16 grid gap-6 lg:grid-cols-[1fr,380px]">
           <div>
