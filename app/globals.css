@@ -4,6 +4,24 @@
 
 :root {
   color-scheme: light;
+  --c-paper: 248 243 232;
+  --c-parchment: 241 233 216;
+  --c-ink: 34 28 20;
+  --c-faded: 111 99 83;
+  --c-line: 217 205 182;
+  --c-white: 255 255 255;
+}
+
+/* Dark mode — flips surfaces/text via the theme variables.
+   Brand colors (accent/stamp/gold/mint) and the existing dark panels
+   (footer, kiosk, steward header, passport cover) are untouched. */
+.dark {
+  color-scheme: dark;
+  --c-parchment: 33 29 24;
+  --c-ink: 232 225 212;
+  --c-faded: 171 159 139;
+  --c-line: 55 49 41;
+  --c-white: 35 31 26;
 }
 
 body {
@@ -15,6 +33,25 @@ body {
     radial-gradient(circle at 92% 8%, rgba(199, 62, 29, 0.045), transparent 40%);
   background-size: 22px 22px, 100% 100%, 100% 100%;
 }
+
+.dark body {
+  background-color: #15130f;
+  color: #e9e3d6;
+  background-image:
+    radial-gradient(rgba(233, 227, 214, 0.05) 1px, transparent 1.2px),
+    radial-gradient(circle at 12% -2%, rgba(185, 138, 46, 0.08), transparent 42%),
+    radial-gradient(circle at 92% 8%, rgba(199, 62, 29, 0.06), transparent 40%);
+}
+
+/* Guard: the few explicit light surfaces / dark pills that must not flip. */
+.dark .bg-paper,
+.dark .bg-paper\/90,
+.dark .bg-paper\/95 {
+  background-color: #15130f;
+}
+/* Keep the dark "active" pills and code blocks dark in dark mode. */
+.dark .bg-ink { background-color: #0d0b08; }
+.dark .bg-ink\/30 { background-color: rgba(0, 0, 0, 0.3); }
 
 ::selection {
   background: #c73e1d;
@@ -30,6 +67,9 @@ body {
   .card {
     @apply rounded-2xl border border-line/90 bg-white/75 shadow-card md:backdrop-blur-sm;
     background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 36%);
+  }
+  .dark .card {
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0) 36%);
   }
   .card-hover {
     @apply transition-all hover:-translate-y-1 hover:shadow-lift hover:border-line;

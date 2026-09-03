@@ -62,6 +62,11 @@ export default function RootLayout({
       <body
         className={`${display.variable} ${body.variable} ${mono.variable} font-body min-h-screen flex flex-col`}
       >
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("onchain-poaps-theme");if(t==="dark")document.documentElement.classList.add("dark");}catch(e){}})();`,
+          }}
+        />
         <Providers>
           <Navbar />
           <main className="flex-1">{children}</main>

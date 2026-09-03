@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -8,11 +9,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        paper: "#f8f3e8",
-        parchment: "#f1e9d8",
-        ink: "#221c14",
-        faded: "#6f6353",
-        line: "#d9cdb6",
+        // Theme tokens driven by CSS variables so light + dark mode both work.
+        paper: "rgb(var(--c-paper) / <alpha-value>)",
+        parchment: "rgb(var(--c-parchment) / <alpha-value>)",
+        ink: "rgb(var(--c-ink) / <alpha-value>)",
+        faded: "rgb(var(--c-faded) / <alpha-value>)",
+        line: "rgb(var(--c-line) / <alpha-value>)",
+        white: "rgb(var(--c-white) / <alpha-value>)",
+        // Brand colors — unchanged in both modes.
         accent: "#c73e1d",
         accentdark: "#9c2f14",
         stamp: "#345e94",
@@ -78,14 +82,15 @@ const config: Config = {
         fadeUp: "fadeUp .4s ease-out both",
         floaty: "floaty 7s ease-in-out infinite",
         marquee: "marquee 28s linear infinite",
-        slam: "slam .5s cubic-bezier(.25,1.6,.35,1) forwards",
-        slamFade: "slamFade 1.9s ease-out forwards",
-        shake: "shake .45s ease-out .38s both",
-        sealL: "sealL .7s cubic-bezier(.3,1.4,.5,1) .1s forwards",
-        sealR: "sealR .7s cubic-bezier(.3,1.4,.5,1) .1s forwards",
+        slam: "slam .32s cubic-bezier(.2,1.4,.4,1)",
+        slamFade: "slamFade .45s ease-out .05s both",
+        shake: "shake .4s ease-in-out",
+        sealL: "sealL .5s ease-out",
+        sealR: "sealR .5s ease-out",
       },
     },
   },
   plugins: [],
 };
+
 export default config;

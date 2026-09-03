@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ConnectControl } from "./ConnectControl";
+import { DarkModeToggle } from "./DarkModeToggle";
 import { useMiniApp } from "./MiniAppProvider";
 import { IS_TESTNET } from "@/lib/contract";
 
@@ -130,7 +131,10 @@ export function Navbar() {
           })}
         </nav>
 
-        <ConnectControl />
+        <div className="flex items-center gap-2">
+          <DarkModeToggle />
+          <ConnectControl />
+        </div>
       </div>
 
       {/* mobile / mini-app bottom tabs */}
