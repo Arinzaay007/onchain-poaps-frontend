@@ -11,7 +11,23 @@ Built for [poidh bounty #1334](https://poidh.xyz/base/bounty/1334).
 - 🔓 Public mint open/close controls with live 30-day-window countdowns
 - 📋 Allowlist workflow: paste addresses → Merkle root built client-side → one-tx setup → auto-download `proofs.json`, per-wallet claim links CSV, root re-verification/proof regeneration
 - ✍️ Signature minting: **live event mode** (sign → claim QR in seconds at the door) and **batch mode** (signatures.json, claim-links CSV, printable QR sheet for badges)
+- 🖥 **Live-event Kiosk** (`/poap/[id]/kiosk`) — a fullscreen creator-gated door screen: paste an address, sign, show a QR, they mint. Built for real events
 - 📦 Direct airdrop (`creatorMint`) to up to 101 wallets per tx
+- 🧭 **The Steward** (`/steward`) — a deterministic, onchain-reading assistant (no server, no AI bill) that answers from live contract state: plan a drop, check who can mint, walk through allowlists/kiosks/deadlines
+
+**For collectors**
+- 🪙 Explore all POAPs with mintability filters
+- ⚡ Every enabled mint path: public, allowlist (paste proofs or one-tap claim links), signature (claim links/QR)
+- 🎫 Serverless claim links — the URL fragment carries the proof/signature; nothing ever touches a server
+- 📖 **POAP Passport / StampBook gallery** — a physical stamp-book of owned POAPs with collector numbers and set progress
+- 🔒 **Soulbound made obvious** — locked POAPs render with a wax seal + lock badge; transferable ones look like loose ticket stubs
+- ✅ **Public attendance verifier** (`/verify`) — check any wallet/ENS against any POAP: balance, mint record, collector number, tx receipt, shareable result links
+- 📜 **Attestation receipt** — a frameable, printable one-page proof of attendance (wallet, collector #, mint tx, verify QR) for any POAP you've minted
+- 📡 **Live onchain activity feed** and per-POAP collector lists ("collector #N"), read straight from contract logs
+- 📚 Full in-app documentation of the entire protocol
+
+**Unstoppable / zero-server**
+- 🛰 **Lifetime export** (`/unstoppable`) — a single self-contained HTML file that reads every POAP straight off the chain via public RPCs (no app server, no database, no IPFS). Survives any host dying; regenerate with `npm run unstoppable`
 
 **For collectors**
 - 🪙 Explore all POAPs with mintability filters
