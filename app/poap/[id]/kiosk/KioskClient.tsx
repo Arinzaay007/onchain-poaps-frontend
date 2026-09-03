@@ -17,11 +17,14 @@ import { PoapStamp } from "@/components/PoapStamp";
  * attendee shows their address (or you scan it) → you tap "sign" → a huge QR
  * appears → they scan with any wallet and mint.
  */
-export function KioskClient() {
+export function KioskClient({ id }: { id: string }) {
   const eventId = useMemo(() => {
-    const m = window.location.pathname.match(/\/poap\/(\d+)\/kiosk/);
-    return m ? BigInt(m[1]) : undefined;
-  }, []);
+    try {
+      return BigInt(id);
+    } catch {
+      return undefined;
+    }
+  }, [id]);
   const { event, isLoading } = usePoapEvent(eventId);
   const { address, isConnected } = useAccount();
   const { signMessageAsync, isPending } = useSignMessage();
