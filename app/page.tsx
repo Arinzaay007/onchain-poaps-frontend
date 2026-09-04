@@ -32,13 +32,13 @@ export default function Home() {
   return (
     <div className="font-body">
       {/* ===== HERO ===== */}
-      <section className="relative overflow-hidden bg-paper">
+      <section className="relative overflow-hidden bg-surf">
         <div className="container-page grid items-center gap-10 py-14 sm:py-20 lg:grid-cols-[1.15fr,1fr]">
           <div>
             <span className="eyebrow">Series 2026 · {IS_TESTNET ? "Base Sepolia" : "Base"} · contract live</span>
             <h1 className="mt-5 font-display text-5xl font-black leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
               Proof of attendance,{" "}
-              <span className="text-[#b23a2c]">stamped forever</span>{" "}
+              <span className="text-accent">stamped forever</span>{" "}
               onchain.
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-faded">
@@ -90,7 +90,7 @@ export default function Home() {
       </section>
 
       {/* ===== MARQUEE ===== */}
-      <div className="overflow-hidden border-b border-line/60 bg-paper py-2" aria-hidden>
+      <div className="overflow-hidden border-b border-line/60 bg-surf py-2" aria-hidden>
         <div className="flex w-max animate-marquee gap-0 font-mono text-[11px] font-semibold uppercase tracking-[0.24em] text-faded/80">
           {[0, 1].map((k) => (
             <span key={k} className="whitespace-nowrap pr-2">
@@ -106,7 +106,7 @@ export default function Home() {
         <section className="mt-20">
           <span className="eyebrow">01 · The process</span>
           <h2 className="mt-2 font-display text-4xl font-black sm:text-5xl">
-            From event to forever, <span className="text-[#b23a2c]">in three moves</span>
+            From event to forever, <span className="text-accent">in three moves</span>
           </h2>
           <p className="mt-3 max-w-xl text-faded">
             No signup, no backend, no pinning service. Every step is a
@@ -119,7 +119,7 @@ export default function Home() {
               { n: "E", t: "Collect", d: "Attendees mint one per wallet. Every stamp is verifiable on BaseScan, readable as raw calldata, and lives in the collection for as long as Base does.", h: "/gallery" },
             ].map((s) => (
               <Link key={s.t} href={s.h} className="card card-hover relative overflow-hidden p-7">
-                <span className="stamp-ring h-11 w-11 font-display text-lg font-black text-[#b23a2c]">{s.n}</span>
+                <span className="stamp-ring h-11 w-11 font-display text-lg font-black text-accent">{s.n}</span>
                 <div className="pointer-events-none absolute right-3 top-2 font-display text-[120px] font-black leading-none text-[#16181f]/[0.04]">
                   {s.n}
                 </div>
@@ -134,7 +134,7 @@ export default function Home() {
         <section className="mt-20">
           <span className="eyebrow">02 · Try it live</span>
           <h2 className="mt-2 font-display text-4xl font-black sm:text-5xl">
-            Every path, <span className="text-[#b23a2c]">one tap away</span>
+            Every path, <span className="text-accent">one tap away</span>
           </h2>
           <p className="mt-3 max-w-xl text-faded">
             Connect a wallet and run any of these against the live contract.
@@ -152,7 +152,7 @@ export default function Home() {
                   <h3 className="font-display text-xl font-bold">{s.t}</h3>
                   <p className="mt-2 leading-relaxed text-faded">{s.d}</p>
                 </div>
-                <span className="mt-4 font-semibold text-[#b23a2c]">{s.cta} →</span>
+                <span className="mt-4 font-semibold text-accent">{s.cta} →</span>
               </Link>
             ))}
           </div>
@@ -220,7 +220,7 @@ export default function Home() {
         <section className="mt-20 flex flex-col items-center text-center">
           <span className="eyebrow">The motto</span>
           <h2 className="mt-3 font-display text-5xl font-black sm:text-6xl">
-            Stamped, <span className="text-[#b23a2c]">not stored.</span>
+            Stamped, <span className="text-accent">not stored.</span>
           </h2>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-faded">
             A file on a server can rot, be unpinned, be taken down. A stamp
@@ -244,7 +244,7 @@ export default function Home() {
             <div>
               <span className="eyebrow">04 · Live onchain activity</span>
               <h2 className="mt-2 font-display text-4xl font-black">
-                Verify attendance, <span className="text-[#b23a2c]">anyone, anytime</span>
+                Verify attendance, <span className="text-accent">anyone, anytime</span>
               </h2>
               <p className="mt-3 max-w-xl leading-relaxed text-faded">
                 Check whether a wallet holds a given stamp — with the mint

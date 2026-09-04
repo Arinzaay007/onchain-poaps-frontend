@@ -34,7 +34,7 @@ export function SbtCard({ item }: { item: PoapListItem }) {
       className="card card-hover group flex flex-col overflow-hidden bg-card"
     >
       {/* header band */}
-      <div className="flex items-center justify-between gap-2 border-b border-line/60 bg-paper/60 px-4 py-2.5">
+      <div className="flex items-center justify-between gap-2 border-b border-line/60 bg-parchment/60 px-4 py-2.5">
         <span className="truncate font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-faded">
           ONCHAIN POAP · BASE{IS_TESTNET ? "·SEP" : ""}
         </span>

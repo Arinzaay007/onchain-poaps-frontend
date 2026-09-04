@@ -144,7 +144,7 @@ export function KioskClient({ id }: { id: string }) {
               <img
                 src={qr}
                 alt="mint QR"
-                className="h-80 w-80 rounded-2xl bg-white p-4 shadow-[0_0_60px_rgba(255,255,255,.12)] sm:h-[26rem] sm:w-[26rem]"
+                className="h-80 w-80 rounded-2xl bg-[#ffffff] p-4 shadow-[0_0_60px_rgba(255,255,255,.12)] sm:h-[26rem] sm:w-[26rem]"
               />
             </div>
             <div className="max-w-md">
