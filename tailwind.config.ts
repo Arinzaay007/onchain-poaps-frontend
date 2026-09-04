@@ -14,6 +14,7 @@ const config: Config = {
         // surf  = the page/element SURFACE, which flips light↔dark.
         paper: "rgb(var(--c-paper) / <alpha-value>)",
         surf: "rgb(var(--c-surf) / <alpha-value>)",
+        card: "rgb(var(--c-card) / <alpha-value>)",
         parchment: "rgb(var(--c-parchment) / <alpha-value>)",
         ink: "rgb(var(--c-ink) / <alpha-value>)",
         faded: "rgb(var(--c-faded) / <alpha-value>)",
