@@ -60,7 +60,7 @@ export default function GalleryPage() {
   return (
     <div className="container-page py-10">
       {/* ---- Passport cover / header ---- */}
-      <div className="relative overflow-hidden rounded-3xl border border-line bg-[linear-gradient(135deg,#3a2c1c_0%,#4a3823_60%,#3a2c1c_100%)] p-8 text-paper shadow-lift sm:p-10">
+      <div className="relative overflow-hidden rounded-3xl border border-line bg-[linear-gradient(135deg,#16181f_0%,#232a39_60%,#16181f_100%)] p-8 text-paper shadow-lift sm:p-10">
         <div className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full border border-paper/10" />
         <div className="pointer-events-none absolute -right-2 -top-2 h-28 w-28 rounded-full border border-paper/10" />
         <div className="flex flex-wrap items-end justify-between gap-4">

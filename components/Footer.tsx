@@ -4,7 +4,7 @@ import { EXPLORER_URL, POAP_ADDRESS } from "@/lib/contract";
 
 export function Footer() {
   return (
-    <footer className="mt-20 border-t border-line/50 bg-[#181209] pb-24 text-paper/60 md:pb-10">
+    <footer className="mt-20 border-t border-line/50 bg-[#16181f] pb-24 text-paper/60 md:pb-10">
       <div className="container-page grid gap-10 py-12 sm:grid-cols-[1fr,auto]">
         {/* Brand */}
         <div className="max-w-md">

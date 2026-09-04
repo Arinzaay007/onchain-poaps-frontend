@@ -88,7 +88,7 @@ export function StewardAgent() {
   return (
     <div className="card flex flex-col overflow-hidden">
       {/* header */}
-      <div className="flex items-center gap-3 border-b border-line bg-[linear-gradient(135deg,#3a2c1c,#4a3823)] px-5 py-4 text-paper">
+      <div className="flex items-center gap-3 border-b border-line bg-[linear-gradient(135deg,#16181f,#242b3a)] px-5 py-4 text-paper">
         <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-dashed border-paper/40 bg-accent/20 text-xl">
           🧭
         </div>

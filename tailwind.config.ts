@@ -20,13 +20,12 @@ const config: Config = {
         faded: "rgb(var(--c-faded) / <alpha-value>)",
         line: "rgb(var(--c-line) / <alpha-value>)",
         white: "rgb(var(--c-white) / <alpha-value>)",
-        // Brand colors — unchanged in both modes.
-        // Brand colors — aligned to the Design Arena palette across all tabs.
-        accent: "#b23a2c",        // vermilion (was #c73e1d)
-        accentdark: "#8a2a1f",
-        stamp: "#2f6b58",         // forest green
-        gold: "#a98a4b",          // muted gold
-        mint: "#3d7a4f",
+        // Brand colors — Design Arena palette (unchanged in both modes).
+        accent: "#b23a2c",       // wax vermilion (primary red)
+        accentdark: "#8a2a1f",   // pressed wax
+        stamp: "#4a5d8c",        // slate-blue (soulbound)
+        gold: "#a98a4b",         // antique gold
+        mint: "#2f6b58",         // forest green (positive/allowlist/verify)
       },
       fontFamily: {
         display: ["var(--font-display)", "serif"],

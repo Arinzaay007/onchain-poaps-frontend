@@ -5,52 +5,52 @@
 /* ---- Light theme (paper / postage stamp) ---- */
 :root {
   color-scheme: light;
-  --c-paper: 246 242 233;      /* warm cream (light text on dark) */
+  --c-paper: 246 242 233;      /* Design Arena cream (light text on dark) */
   --c-surf: 246 242 233;       /* page surface */
-  --c-card: 253 250 243;       /* greeting-card surface */
-  --c-parchment: 241 233 216;  /* raised paper */
-  --c-ink: 22 24 31;           /* cool charcoal ink (DA #16181f) */
-  --c-faded: 131 136 154;      /* cool muted */
+  --c-card: 253 250 243;       /* card surface */
+  --c-parchment: 239 233 220;  /* raised paper */
+  --c-ink: 22 24 31;           /* cool charcoal ink */
+  --c-faded: 100 102 116;      /* muted slate */
   --c-line: 226 218 203;       /* hairline */
   --c-white: 255 255 255;
 }
 
-/* ---- Dark theme (midnight / night-book, warm not cold) ---- */
+/* ---- Dark theme (cool charcoal night, matches Design Arena) ---- */
 .dark {
   color-scheme: dark;
-  --c-paper: 240 234 221;      /* cream stays light for text on dark */
-  --c-surf: 21 18 14;          /* deep warm charcoal page */
-  --c-card: 33 29 24;          /* raised dark panel */
-  --c-parchment: 33 29 24;     /* raised dark panel */
-  --c-ink: 233 226 213;        /* warm off-white text */
-  --c-faded: 165 152 133;      /* muted warm */
-  --c-line: 60 52 43;          /* hairline */
-  --c-white: 40 35 29;
+  --c-paper: 233 229 219;      /* cream stays light for text on dark */
+  --c-surf: 23 25 31;          /* cool dark page */
+  --c-card: 32 35 43;          /* raised dark panel */
+  --c-parchment: 30 33 41;     /* raised dark panel */
+  --c-ink: 233 230 222;        /* warm off-white text */
+  --c-faded: 160 162 175;      /* muted slate */
+  --c-line: 55 58 68;          /* hairline */
+  --c-white: 42 44 52;
 }
 
 body {
   @apply bg-surf text-ink font-body antialiased;
   background-image:
-    radial-gradient(rgba(34, 28, 20, 0.032) 1px, transparent 1.2px),
-    radial-gradient(circle at 12% -2%, rgba(185, 138, 46, 0.06), transparent 42%),
-    radial-gradient(circle at 92% 8%, rgba(199, 62, 29, 0.045), transparent 40%);
+    radial-gradient(rgba(22, 24, 31, 0.03) 1px, transparent 1.2px),
+    radial-gradient(circle at 12% -2%, rgba(169, 138, 75, 0.05), transparent 42%),
+    radial-gradient(circle at 92% 8%, rgba(178, 58, 44, 0.04), transparent 40%);
   background-size: 22px 22px, 100% 100%, 100% 100%;
 }
 
 /* dark grain is subtle & light-toned so it reads on charcoal */
 .dark body {
-  background-color: #15120e;
+  background-color: #17191f;
   background-image:
-    radial-gradient(rgba(240, 234, 221, 0.045) 1px, transparent 1.2px),
-    radial-gradient(circle at 12% -2%, rgba(185, 138, 46, 0.08), transparent 42%),
+    radial-gradient(rgba(233, 229, 219, 0.045) 1px, transparent 1.2px),
+    radial-gradient(circle at 12% -2%, rgba(169, 138, 75, 0.08), transparent 42%),
     radial-gradient(circle at 92% 8%, rgba(206, 72, 39, 0.07), transparent 40%);
 }
 
 /* accents brighten a touch for contrast on dark */
-.dark .text-accent { color: #e2623c; }
-.dark .text-gold { color: #d3a94a; }
-.dark .text-mint { color: #5eaf77; }
-.dark .text-stamp { color: #6ea1e0; }
+.dark .text-accent { color: #e05e4d; }
+.dark .text-gold { color: #d0a34c; }
+.dark .text-mint { color: #5ba380; }
+.dark .text-stamp { color: #7d90c6; }
 
 ::selection {
   background: #b23a2c;

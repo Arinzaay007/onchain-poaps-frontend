@@ -78,7 +78,7 @@ export function KioskClient({ id }: { id: string }) {
   };
 
   return (
-    <div className="flex min-h-[100dvh] flex-col bg-[#14100a] text-paper">
+    <div className="flex min-h-[100dvh] flex-col bg-[#16181f] text-paper">
       {/* header bar */}
       <header className="flex items-center justify-between gap-4 border-b border-paper/10 px-6 py-4">
         <div className="flex min-w-0 items-center gap-3">
