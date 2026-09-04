@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { useTotalEvents, usePoapList } from "@/lib/hooks";
 import { useRecentActivity } from "@/lib/activity";
 import { PoapStamp } from "@/components/PoapStamp";
+import { SbtCard } from "@/components/SbtCard";
 import { IS_TESTNET, POAP_ADDRESS, EXPLORER_URL } from "@/lib/contract";
 import { formatDate, shortAddress } from "@/lib/format";
 import { mintAvailability } from "@/lib/poap";
@@ -177,35 +178,9 @@ export default function Home() {
             <div className="card mt-8 p-10 text-center text-faded">Reading stamps from Base…</div>
           ) : (
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {items.map((it) => {
-                const a = mintAvailability(it.event);
-                const mintType = a.signatureOpen ? "QR claim" : a.allowlistOpen ? "Allowlist" : a.publicOpen ? "Public mint" : "Claim";
-                const status = (it.supply ?? 0n) > 0n ? "stamped" : "open";
-                return (
-                  <Link key={it.event.id.toString()} href={`/poap/${it.event.id}`} className="card card-hover flex flex-col p-6">
-                    <div className="flex items-center justify-between">
-                      <span className="badge border border-line bg-paper text-faded">{mintType}</span>
-                      <span className="font-mono text-[10px] uppercase tracking-wider text-faded">
-                        {shortAddress(it.event.creator)}
-                      </span>
-                    </div>
-                    <div className="mt-4 flex justify-center">
-                      <PoapStamp image={it.metadata?.image} alt={it.event.name} size="sm" sealed={it.event.isSoulbound} />
-                    </div>
-                    <h3 className="mt-4 line-clamp-1 font-display text-lg font-bold">{it.event.name}</h3>
-                    <p className="text-xs text-faded">
-                      {formatDate(it.event.eventDate || it.event.createdAt)}
-                      {it.event.location ? ` · ${it.event.location}` : ""}
-                    </p>
-                    {it.event.description && (
-                      <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-faded">{it.event.description}</p>
-                    )}
-                    <p className="mt-3 font-mono text-[11px] uppercase tracking-wider text-[#b23a2c]">
-                      {status} · {it.supply.toString()} minted
-                    </p>
-                  </Link>
-                );
-              })}
+              {items.map((it) => (
+                <SbtCard key={it.event.id.toString()} item={it} />
+              ))}
             </div>
           )}
         </section>

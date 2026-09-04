@@ -21,10 +21,11 @@ const config: Config = {
         line: "rgb(var(--c-line) / <alpha-value>)",
         white: "rgb(var(--c-white) / <alpha-value>)",
         // Brand colors — unchanged in both modes.
-        accent: "#c73e1d",
-        accentdark: "#9c2f14",
-        stamp: "#345e94",
-        gold: "#b98a2e",
+        // Brand colors — aligned to the Design Arena palette across all tabs.
+        accent: "#b23a2c",        // vermilion (was #c73e1d)
+        accentdark: "#8a2a1f",
+        stamp: "#2f6b58",         // forest green
+        gold: "#a98a4b",          // muted gold
         mint: "#3d7a4f",
       },
       fontFamily: {

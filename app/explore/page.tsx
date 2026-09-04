@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useTotalEvents, usePoapList } from "@/lib/hooks";
-import { PoapCard } from "@/components/PoapCard";
+import { SbtCard } from "@/components/SbtCard";
 import { mintAvailability } from "@/lib/poap";
 
 const PAGE = 24;
@@ -89,7 +89,7 @@ export default function ExplorePage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {filtered.map((it) => (
-            <PoapCard key={it.event.id.toString()} item={it} />
+            <SbtCard key={it.event.id.toString()} item={it} />
           ))}
         </div>
       )}

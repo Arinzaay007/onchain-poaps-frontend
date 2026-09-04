@@ -5,13 +5,13 @@
 /* ---- Light theme (paper / postage stamp) ---- */
 :root {
   color-scheme: light;
-  --c-paper: 248 243 232;      /* warm cream (light text on dark) */
-  --c-surf: 248 243 232;       /* page surface */
+  --c-paper: 246 242 233;      /* warm cream (light text on dark) */
+  --c-surf: 246 242 233;       /* page surface */
   --c-card: 253 250 243;       /* greeting-card surface */
   --c-parchment: 241 233 216;  /* raised paper */
-  --c-ink: 34 28 20;           /* near-black ink */
-  --c-faded: 111 99 83;        /* muted sepia */
-  --c-line: 217 205 182;       /* hairline */
+  --c-ink: 22 24 31;           /* cool charcoal ink (DA #16181f) */
+  --c-faded: 131 136 154;      /* cool muted */
+  --c-line: 226 218 203;       /* hairline */
   --c-white: 255 255 255;
 }
 
@@ -53,8 +53,8 @@ body {
 .dark .text-stamp { color: #6ea1e0; }
 
 ::selection {
-  background: #c73e1d;
-  color: #f8f3e8;
+  background: #b23a2c;
+  color: #f6f2e9;
 }
 .dark ::selection { background: #d0481f; color: #f6f0e1; }
 
